@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#2196F3</color>
+    <color name="colorPrimaryDark">#1976D2</color>
+    <color name="colorAccent">#4CAF50</color>
+    <color name="colorEmergency">#FF0000</color>
+    <color name="colorBackground">#FFFFFF</color>
+    <color name="colorText">#212121</color>
+    <color name="colorTextSecondary">#757575</color>
+    <color name="colorHighContrast">#000000</color>
+
+    <!-- Base colors -->
+    <color name="card_background">#FFFFFF</color>
+
+    <!-- Accessible colors -->
+    <color name="accessible_background_blue">#E8F5FF</color>
+    <color name="accessible_blue">#0074D9</color>
+    <color name="accessible_orange">#FF8C00</color>
+    <color name="accessible_text_primary">#212121</color>
+    <color name="accessible_text_secondary">#424242</color>
+    <color name="accessible_bottom_nav_item_color">#FFFFFF</color>
+
+    <!-- SOS Button color - high contrast, accessible orange-red -->
+    <color name="sos_button_color">#F03A47</color>
+</resources>

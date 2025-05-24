@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Siaga Difabel</string>
+    <string name="app_description">Aplikasi Siaga Bencana untuk Difabel</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="select_disability_type">Pilih Jenis Disabilitas Anda</string>
+    <string name="login">Masuk</string>
+    <string name="register_prompt">Belum punya akun? Daftar sekarang</string>
+    <string name="disability_type_icon">Ikon Jenis Disabilitas</string>
+    <string name="hello_user">Halo, Pengguna!</string>
+    <string name="accessibility_mode">Mode Aksesibilitas</string>
+    <string name="weather_and_alerts">Cuaca &amp; Peringatan</string>
+    <string name="loading_weather">Memuat informasi cuaca...</string>
+    <string name="no_active_alerts">Tidak ada peringatan aktif di area Anda</string>
+    <string name="safety_tips">Tips Keselamatan</string>
+    <string name="evacuation_routes">Rute Evakuasi</string>
+    <string name="show_map">Lihat Peta</string>
+    <string name="emergency_contacts">Kontak Darurat</string>
+    <string name="sos_button_text">SOS - BANTUAN DARURAT</string>
+    <string name="home">Beranda</string>
+    <string name="profile">Profil</string>
+    <string name="emergency_mode">MODE DARURAT</string>
+    <string name="sending_sos_signal">Mengirim Sinyal SOS</string>
+    <string name="contacting_emergency_services">Menghubungi layanan darurat...</string>
+    <string name="call_emergency">Panggil Darurat</string>
+    <string name="cancel_sos">Batalkan SOS</string>
+    <string name="sending_location">Mengirim lokasi Anda ke layanan darurat...</string>
+    <string name="profile_settings">Pengaturan Profil</string>
+    <string name="change_photo">Ubah Foto</string>
+    <string name="personal_information">Informasi Pribadi</string>
+    <string name="full_name">Nama Lengkap</string>
+    <string name="phone_number">Nomor Telepon</string>
+    <string name="address">Alamat</string>
+    <string name="disability_information">Informasi Disabilitas</string>
+    <string name="disability_details">Detail Disabilitas</string>
+    <string name="emergency_contacts_title">Kontak Darurat</string>
+    <string name="contact_name_1">Nama Kontak 1</string>
+    <string name="contact_phone_1">Telepon Kontak 1</string>
+    <string name="add_more_contacts">+ Tambah Kontak Lain</string>
+    <string name="accessibility_settings">Pengaturan Aksesibilitas</string>
+    <string name="enable_text_to_speech">Aktifkan Text-to-Speech</string>
+    <string name="enable_high_contrast">Aktifkan Kontras Tinggi</string>
+    <string name="enable_large_text">Aktifkan Teks Besar</string>
+    <string name="save_profile">Simpan Profil</string>
+</resources>
