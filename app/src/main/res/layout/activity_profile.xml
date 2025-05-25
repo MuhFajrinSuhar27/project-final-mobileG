@@ -6,7 +6,6 @@
     android:orientation="vertical"
     android:background="#F5F9FF">
 
-
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -42,7 +41,6 @@
                     android:scaleType="centerCrop"
                     android:src="@drawable/default_profile"
                     android:contentDescription="Foto profil pengguna" />
-
 
             </RelativeLayout>
 
@@ -96,6 +94,7 @@
                     <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="20dp"
                         android:hint="Alamat"
                         app:boxStrokeColor="#1A73E8"
                         app:hintTextColor="#1A73E8">
@@ -107,6 +106,20 @@
                             android:inputType="textPostalAddress"
                             android:textSize="18sp" />
                     </com.google.android.material.textfield.TextInputLayout>
+
+                    <!-- Tombol Simpan Profil dipindah ke dalam card -->
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/buttonSaveProfile"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="14dp"
+                        android:text="SIMPAN PROFIL"
+                        android:textSize="16sp"
+                        android:backgroundTint="#1A73E8"
+                        app:cornerRadius="12dp"
+                        app:iconGravity="textStart"
+                        app:iconPadding="12dp"
+                        app:iconTint="#FFFFFF" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
@@ -114,7 +127,7 @@
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
+                android:layout_marginBottom="32dp"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="4dp"
                 app:cardBackgroundColor="#FFFFFF"
@@ -168,21 +181,53 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <!-- Tombol Simpan -->
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/buttonSaveProfile"
+            <!-- Divider -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#E0E0E0"
+                android:layout_marginBottom="24dp" />
+
+            <!-- Section Login Sederhana -->
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="16dp"
-                android:padding="16dp"
-                android:text="SIMPAN PROFIL"
+                android:text="Akses Khusus"
                 android:textSize="18sp"
-                android:backgroundTint="#1A73E8"
+                android:textColor="#03A9F4"
+                android:textStyle="bold"
+                android:layout_marginBottom="16dp"
+                android:gravity="center" />
+
+            <!-- Tombol Login Sederhana -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonLogin"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="256dp"
+                android:layout_height="70dp"
+                android:layout_gravity="center"
+                android:padding="16dp"
+                android:text="LOGIN "
+                android:textSize="16sp"
+                android:textColor="#03A9F4"
+                app:strokeColor="#03A9F4"
                 app:cornerRadius="12dp"
-                app:iconGravity="textStart"
-                app:iconPadding="16dp"
-                app:iconTint="#FFFFFF" />
+                app:strokeWidth="2dp"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Tombol Dashboard User -->
+
+
+            <!-- Footer -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="© 2025 - Siagaki "
+                android:textSize="12sp"
+                android:textColor="#999999"
+                android:gravity="center"
+                android:layout_marginBottom="20dp" />
+
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

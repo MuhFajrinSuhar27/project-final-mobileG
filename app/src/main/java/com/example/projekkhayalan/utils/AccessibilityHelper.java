@@ -7,9 +7,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import androidx.core.content.ContextCompat;
 
-import com.example.projekkhayalan.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,7 +73,7 @@ public class AccessibilityHelper {
         // Untuk tunagrahita: UI lebih sederhana, teks lebih mudah dipahami
         else if (disabilityType == 4) { // Tunagrahita
             setLargerText(true);
-            // Simplifikasi UI (bisa ditambahkan implementasi khusus)
+
         }
     }
 

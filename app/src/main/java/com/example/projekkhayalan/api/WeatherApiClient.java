@@ -7,13 +7,12 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import java.util.concurrent.TimeUnit;
 
 public class WeatherApiClient {
-    // Update BASE_URL untuk sesuai dengan endpoint yang Anda inginkan
     private static final String BASE_URL = "https://api.bmkg.go.id/";
     private static Retrofit retrofit = null;
 
     public static Retrofit getClient() {
         if (retrofit == null) {
-            // Menambahkan logging interceptor untuk debugging
+
             HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
             loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
 

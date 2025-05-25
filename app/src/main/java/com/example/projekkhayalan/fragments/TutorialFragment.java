@@ -32,7 +32,6 @@ public class TutorialFragment extends Fragment {
     private AccessibilityHelper accessibilityHelper;
 
     public TutorialFragment() {
-        // Required empty public constructor
     }
 
     public static TutorialFragment newInstance(int disabilityType) {

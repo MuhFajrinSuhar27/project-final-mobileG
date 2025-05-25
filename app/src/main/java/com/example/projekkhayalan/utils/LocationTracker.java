@@ -21,7 +21,7 @@ public class LocationTracker {
     private LocationCallback locationCallback;
     private LocationRequest locationRequest;
 
-    // Ganti nama interface ini untuk menghindari konflik nama
+
     public interface LocationResultCallback {
         void onLocationResult(Location location);
     }
@@ -44,7 +44,6 @@ public class LocationTracker {
                     if (location != null) {
                         callback.onLocationResult(location);
                     } else {
-                        // If last location is null, request location updates
                         requestLocationUpdates(callback);
                     }
                 })
@@ -64,7 +63,7 @@ public class LocationTracker {
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         locationRequest.setInterval(5000);
         locationRequest.setFastestInterval(2000);
-        locationRequest.setNumUpdates(1); // Only get one update
+        locationRequest.setNumUpdates(1);
 
         // Sekarang ini jelas menggunakan LocationCallback dari Google
         locationCallback = new LocationCallback() {
@@ -88,13 +87,13 @@ public class LocationTracker {
         fusedLocationClient.requestLocationUpdates(
                 locationRequest, locationCallback, Looper.getMainLooper());
 
-        // Add a timeout to stop location updates if we don't get a response
+
         new android.os.Handler(Looper.getMainLooper()).postDelayed(
                 () -> {
                     fusedLocationClient.removeLocationUpdates(locationCallback);
                     callback.onLocationResult(null);
                 },
-                10000); // 10 second timeout
+                5000); // 5 second ajah
     }
 
     public void stopLocationUpdates() {

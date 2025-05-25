@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
@@ -36,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
     private BottomNavigationView bottomNavigationView;
     private Button buttonSos;
 
-    // Tambahkan TextView untuk UI cuaca baru
+
     private TextView textViewCity;
     private TextView textViewTime;
     private TextView textViewWeatherCondition;
@@ -48,6 +47,9 @@ public class MainActivity extends AppCompatActivity {
     private String selectedFeature;
     private TextToSpeech textToSpeech;
     private static final String TAG = "MainActivity";
+
+    // Tambahkan flag untuk mencegah recursive calls
+    private boolean isNavigatingProgrammatically = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
         setupSosButton();
         loadWeatherData(); // Load weather data
 
-        // Set up accessibility features based on disability type
+
         setupAccessibilityFeatures();
     }
 
@@ -82,9 +84,20 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupBottomNavigation() {
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
+            // Hindari pemrosesan ulang jika navigasi sedang dilakukan secara programmatic
+            if (isNavigatingProgrammatically) {
+                isNavigatingProgrammatically = false;
+                return true;
+            }
+
             int itemId = item.getItemId();
 
             if (itemId == R.id.nav_home) {
+                // Jika ada fragment di backstack, kembalikan ke tampilan utama
+                if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+                    getSupportFragmentManager().popBackStack();
+                    showMainContent(false); // Jangan set selected item lagi
+                }
                 return true;
             } else if (itemId == R.id.nav_profile) {
                 Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
@@ -253,7 +266,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
     private void showFragmentHideMainContent() {
         // Buat instance fragment tutorial
         TutorialFragment tutorialFragment = TutorialFragment.newInstance(disabilityType);
@@ -279,7 +291,41 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(this, "Menampilkan tutorial mitigasi bencana", Toast.LENGTH_SHORT).show();
     }
 
+    // Metode yang diperbaiki untuk menampilkan kembali konten utama
+    private void showMainContent(boolean updateSelectedItem) {
+        // Dapatkan referensi view dari layout
+        FrameLayout contentFrame = findViewById(R.id.content_frame);
+        ScrollView mainScrollView = findViewById(R.id.scrollViewMain);
+        Button sosButton = findViewById(R.id.buttonSos);
 
+        // Sembunyikan fragment container
+        contentFrame.setVisibility(View.GONE);
+
+        // Tampilkan kembali konten utama
+        if (mainScrollView != null) mainScrollView.setVisibility(View.VISIBLE);
+        sosButton.setVisibility(View.VISIBLE);
+
+        // Perbarui selected item hanya jika diminta
+        if (updateSelectedItem) {
+            isNavigatingProgrammatically = true;
+            bottomNavigationView.setSelectedItemId(R.id.nav_home);
+        }
+    }
+
+    // Overload untuk backward compatibility
+    private void showMainContent() {
+        showMainContent(true);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+            getSupportFragmentManager().popBackStack();
+            showMainContent(true);
+        } else {
+            super.onBackPressed();
+        }
+    }
 
     private void updateAlertInfo(WeatherResponse.WeatherItem weather) {
         String weatherDesc = weather.getWeatherDescription().toLowerCase();
