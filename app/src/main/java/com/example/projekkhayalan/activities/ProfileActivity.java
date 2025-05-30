@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.MenuItem;
 import android.widget.ImageView;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -19,6 +20,17 @@ import com.example.projekkhayalan.utils.AccessibilityHelper;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
+
+// Import yang diperlukan
+import android.app.AlertDialog;
+import android.content.Intent;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.RadioGroup;
+import android.widget.Toast;
+import com.example.projekkhayalan.database.DatabaseHelper;
+import com.google.android.material.button.MaterialButton;
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -36,6 +48,8 @@ public class ProfileActivity extends AppCompatActivity {
     private int disabilityType;
     private Uri selectedImageUri;
     private AccessibilityHelper accessibilityHelper;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,7 +153,7 @@ public class ProfileActivity extends AppCompatActivity {
         }
     }
 
-    private void setupClickListeners() {
+    private void setupClickListener() {
         // Untuk mengganti foto profil
         if (buttonChangePhoto != null) {
             buttonChangePhoto.setOnClickListener(v -> {
@@ -222,4 +236,77 @@ public class ProfileActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+
+    private void setupLoginButton() {
+        MaterialButton buttonLogin = findViewById(R.id.buttonLogin);
+        if (buttonLogin != null) {
+            buttonLogin.setOnClickListener(v -> showLoginDialog());
+        }
+    }
+
+    private void showLoginDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_admin_login, null);
+
+        final EditText editUsername = dialogView.findViewById(R.id.editTextUsername);
+        final EditText editPassword = dialogView.findViewById(R.id.editTextPassword);
+        final RadioGroup radioGroupRole = dialogView.findViewById(R.id.radioGroupRole);
+
+        builder.setView(dialogView)
+                .setTitle("Login")
+                .setPositiveButton("Login", (dialog, id) -> {
+                    String username = editUsername.getText().toString().trim();
+                    String password = editPassword.getText().toString().trim();
+
+                    if (username.isEmpty() || password.isEmpty()) {
+                        Toast.makeText(ProfileActivity.this, "Silakan isi username dan password", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    // Tentukan role yang dipilih
+                    int selectedId = radioGroupRole.getCheckedRadioButtonId();
+                    boolean isAdmin = (selectedId == R.id.radioButtonAdmin);
+
+                    // Periksa login dengan database
+                    DatabaseHelper dbHelper = new DatabaseHelper(ProfileActivity.this);
+                    boolean isValid;
+
+                    if (isAdmin) {
+                        isValid = dbHelper.checkAdminLogin(username, password);
+                        if (isValid) {
+                            Toast.makeText(ProfileActivity.this, "Login admin berhasil", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(ProfileActivity.this, AdminDashboardActivity.class);
+                            startActivity(intent);
+                        } else {
+                            Toast.makeText(ProfileActivity.this, "Username atau password admin salah", Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        isValid = dbHelper.checkPetugasLogin(username, password);
+                        if (isValid) {
+                            Toast.makeText(ProfileActivity.this, "Login petugas berhasil", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(ProfileActivity.this, PetugasDashboardActivity.class);
+                            intent.putExtra("USERNAME_PETUGAS", username);
+                            startActivity(intent);
+                        } else {
+                            Toast.makeText(ProfileActivity.this, "Username atau password petugas salah", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                })
+                .setNegativeButton("Batal", (dialog, id) -> dialog.cancel());
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    // Ubah metode setupClickListeners untuk memanggil setupLoginButton
+    private void setupClickListeners() {
+        // Setup tombol lain seperti sebelumnya
+
+        // Tambahkan ini:
+        setupLoginButton();
+    }
+
+
 }

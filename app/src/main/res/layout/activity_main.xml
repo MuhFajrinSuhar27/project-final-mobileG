@@ -186,7 +186,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:background="@drawable/alert_gradient_backround"
+                    android:background="@drawable/alert_gradient_bacground"
                     android:padding="20dp">
 
                     <LinearLayout

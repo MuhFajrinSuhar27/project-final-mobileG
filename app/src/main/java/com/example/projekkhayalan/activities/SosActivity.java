@@ -3,6 +3,8 @@ package com.example.projekkhayalan.activities;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,6 +12,7 @@ import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Looper;
 import android.speech.tts.TextToSpeech;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,9 +22,13 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import com.example.projekkhayalan.MainActivity;
 import com.example.projekkhayalan.R;
+import com.example.projekkhayalan.database.DatabaseHelper;
 import com.example.projekkhayalan.utils.LocationTracker;
 
+import java.io.IOException;
+import java.util.List;
 import java.util.Locale;
 
 public class SosActivity extends AppCompatActivity {
@@ -138,16 +145,75 @@ public class SosActivity extends AppCompatActivity {
     }
 
     private void sendEmergencyMessage(Location location) {
-        // Simulate sending emergency message
-        new Handler(Looper.getMainLooper()).postDelayed(() -> {
-            isEmergencyMessageSent = true;
-            textViewSosStatus.setText("Sinyal darurat telah dikirim! Petugas akan segera menghubungi Anda.");
+        try {
+            // Simpan lokasi ke database
+            DatabaseHelper dbHelper = new DatabaseHelper(this);
 
-            if (disabilityType == 1 && textToSpeech != null) { // Tunanetra
-                textToSpeech.speak("Sinyal darurat telah dikirim! Petugas akan segera menghubungi Anda.",
-                        TextToSpeech.QUEUE_FLUSH, null, "sent");
+            // Untuk alamat, gunakan koordinat sebagai fallback
+            String alamat = "Lokasi koordinat: " + location.getLatitude() + ", " + location.getLongitude();
+
+            // Coba dapatkan alamat sebenarnya menggunakan Geocoder
+            try {
+                Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+                List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+                if (addresses != null && !addresses.isEmpty()) {
+                    Address address = addresses.get(0);
+                    StringBuilder sb = new StringBuilder();
+                    for (int i = 0; i <= address.getMaxAddressLineIndex(); i++) {
+                        sb.append(address.getAddressLine(i));
+                        if (i < address.getMaxAddressLineIndex()) sb.append(", ");
+                    }
+                    alamat = sb.toString();
+                }
+            } catch (IOException e) {
+                Log.e("SosActivity", "Error saat mengambil alamat: " + e.getMessage());
             }
-        }, 3000);
+
+            Log.d("SosActivity", "Mencoba menyimpan SOS call dengan koordinat: " +
+                    location.getLatitude() + ", " + location.getLongitude());
+
+            // Simpan ke database
+            long sosCallId = dbHelper.saveSosCall(location.getLatitude(), location.getLongitude(), alamat);
+
+            if (sosCallId > 0) {
+                Log.d("SosActivity", "SOS Call berhasil disimpan dengan ID: " + sosCallId);
+            } else {
+                Log.e("SosActivity", "Gagal menyimpan SOS call!");
+            }
+
+            // Simulasi mengirim pesan darurat
+            new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                isEmergencyMessageSent = true;
+                textViewSosStatus.setText("Sinyal darurat telah dikirim! Petugas akan segera menghubungi Anda.");
+
+                if (disabilityType == 1 && textToSpeech != null) { // Tunanetra
+                    textToSpeech.speak("Sinyal darurat telah dikirim! Petugas akan segera menghubungi Anda.",
+                            TextToSpeech.QUEUE_FLUSH, null, "sent");
+                }
+
+                // Tambahkan timer untuk kembali ke halaman utama setelah 5 detik
+                new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                    // Menampilkan toast sebelum kembali
+                    Toast.makeText(this, "Kembali ke halaman utama", Toast.LENGTH_SHORT).show();
+
+                    // Text to speech untuk pengguna tunanetra
+                    if (disabilityType == 1 && textToSpeech != null) {
+                        textToSpeech.speak("Kembali ke halaman utama",
+                                TextToSpeech.QUEUE_FLUSH, null, "return");
+                    }
+
+                    // Kembali ke MainActivity
+                    Intent intent = new Intent(SosActivity.this, MainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // Hapus activity stack sebelumnya
+                    startActivity(intent);
+                    finish(); // Tutup SosActivity
+                }, 6000); // 5000 ms = 5 detik
+
+            }, 3000);
+        } catch (Exception e) {
+            Log.e("SosActivity", "Error saat mengirim emergency message: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     private void startEmergencyProtocol() {
