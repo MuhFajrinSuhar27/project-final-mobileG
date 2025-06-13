@@ -15,6 +15,7 @@ import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
 import com.example.projekkhayalan.R;
+import com.example.projekkhayalan.activities.MitigasiDetailActivity;
 import com.example.projekkhayalan.utils.AccessibilityHelper;
 
 import java.util.Locale;
@@ -158,10 +159,14 @@ public class TutorialFragment extends Fragment {
     }
 
     private void showMitigasiDetail(String disasterType) {
+        // Create intent to launch MitigasiDetailActivity
+        Intent intent = new Intent(requireContext(), MitigasiDetailActivity.class);
+        intent.putExtra("DISASTER_TYPE", disasterType);
+        intent.putExtra("DISABILITY_TYPE", disabilityType);
+        startActivity(intent);
 
+        // Display a toast message for accessibility feedback
         Toast.makeText(requireContext(), "Menampilkan mitigasi untuk " + disasterType, Toast.LENGTH_SHORT).show();
-
-
     }
 
     private void speakMitigasiDetail(String disasterType) {
