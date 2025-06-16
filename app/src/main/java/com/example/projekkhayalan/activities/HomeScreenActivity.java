@@ -24,7 +24,7 @@ public class HomeScreenActivity extends AppCompatActivity {
     private CardView cardTunadaksa;  // Sesuaikan dengan ID di layout
     private CardView cardTunagrahita; // Sesuaikan dengan ID di layout
 
-    private int disabilityType = 0;  // Default: tidak diketahui
+    private int disabilityType = 1;  // Default: tidak diketahui
     private TextToSpeech textToSpeech;
     private AccessibilityHelper accessibilityHelper;
     private SharedPreferences preferences;
@@ -90,7 +90,7 @@ public class HomeScreenActivity extends AppCompatActivity {
     }
 
     private void speakWelcomeMessage() {
-        if (textToSpeech != null && disabilityType == 1) {
+        if (textToSpeech != null) {
             String welcomeMessage = "Selamat datang di Aplikasi Siaga Bencana untuk Difabel. " +
                     "Pilih salah satu jenis disabilitas.";
             textToSpeech.speak(welcomeMessage, TextToSpeech.QUEUE_FLUSH, null, "welcome");

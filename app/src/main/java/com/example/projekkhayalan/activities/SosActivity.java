@@ -202,47 +202,44 @@ public class SosActivity extends AppCompatActivity {
     }
     private CountDownTimer returnToMainTimer;
 
+
+    private void backToMain() {
+        Intent intent = new Intent(SosActivity.this, MainActivity.class);
+        intent.putExtra("DISABILITY_TYPE", disabilityType);
+        startActivity(intent);
+        finish();
+    }
     private void startReturnToMainTimer(int seconds) {
         if (returnToMainTimer != null) {
             returnToMainTimer.cancel();
         }
-
+    
         final long totalTime = seconds * 1000;
         final long interval = 1000;
-
+    
         returnToMainTimer = new CountDownTimer(totalTime, interval) {
             @Override
             public void onTick(long millisUntilFinished) {
                 int secondsLeft = (int) (millisUntilFinished / 1000);
                 textViewSosStatus.setText("Kembali ke halaman utama dalam " + secondsLeft + " detik...");
-
-
-
             }
-
+    
             @Override
             public void onFinish() {
-                Toast.makeText(SosActivity.this, "Kembali ke halaman utama", Toast.LENGTH_SHORT).show();
-
-                Intent resultIntent = new Intent();
-                resultIntent.putExtra("FROM_SOS", true);
-                setResult(RESULT_OK, resultIntent);
-
-                Intent intent = new Intent(SosActivity.this, MainActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
-                finish();
+                // Ganti kode yang ada dengan panggilan ke backToMain()
+                backToMain();
             }
         }.start();
     }
-
+    
+    // Modifikasi method cancelEmergency() untuk menggunakan backToMain()
     private void cancelEmergency() {
         if (sosTimer != null) {
             sosTimer.cancel();
         }
-
+    
         Toast.makeText(this, "Permintaan bantuan dibatalkan", Toast.LENGTH_SHORT).show();
-
+    
         if (disabilityType == 1 && textToSpeech != null) {
             textToSpeech.speak("Permintaan bantuan darurat dibatalkan",
                     TextToSpeech.QUEUE_FLUSH, null, "cancel");
@@ -250,7 +247,10 @@ public class SosActivity extends AppCompatActivity {
         startReturnToMainTimer(2);
     }
 
-    @Override
+
+
+
+
     protected void onDestroy() {
         if (returnToMainTimer != null) {returnToMainTimer.cancel();
             returnToMainTimer = null;
