@@ -65,7 +65,7 @@ public class LocationTracker {
         locationRequest.setFastestInterval(2000);
         locationRequest.setNumUpdates(1);
 
-        // Sekarang ini jelas menggunakan LocationCallback dari Google
+
         locationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(LocationResult locationResult) {

@@ -17,6 +17,19 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ProjekKhayalan"
         tools:targetApi="31">
+
+        <!-- SplashActivity sebagai LAUNCHER -->
+        <activity
+            android:name=".activities.SplashActivity"
+            android:exported="true"
+            android:theme="@style/SplashTheme"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
         <activity
             android:name=".adapters.SosCallAdapter"
             android:exported="false" />
@@ -25,17 +38,14 @@
             android:exported="false" />
         <activity
             android:name=".activities.AdminDashboardActivity"
-            android:exported="false" /> <!-- Memindahkan intent-filter ke HomeScreenActivity untuk membuatnya jadi launcher activity -->
+            android:exported="false" />
+
+        <!-- HomeScreenActivity tidak lagi sebagai launcher -->
         <activity
             android:name=".activities.HomeScreenActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            android:exported="false">
+        </activity>
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity> <!-- TutorialFragment sebenarnya adalah fragment, bukan activity -->
-        <!-- Jika ini perlu diakses sebagai activity terpisah, buat TutorialActivity -->
         <activity
             android:name=".activities.ProfileActivity"
             android:exported="false" />

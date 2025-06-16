@@ -5,6 +5,8 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.View;
@@ -35,20 +37,37 @@ public class MainActivity extends AppCompatActivity {
     private BottomNavigationView bottomNavigationView;
     private Button buttonSos;
 
-
     private TextView textViewCity;
     private TextView textViewTime;
     private TextView textViewWeatherCondition;
     private TextView textViewTemperatureBig;
     private TextView textViewWeatherDetails;
     private TextView textViewAlertInfo;
+    private TextView textViewLastUpdated;
 
     private int disabilityType;
     private String selectedFeature;
     private TextToSpeech textToSpeech;
     private static final String TAG = "MainActivity";
 
-    // Tambahkan flag untuk mencegah recursive calls
+    // Kode request untuk SOS
+    private static final int REQUEST_SOS_CODE = 101;
+    private boolean isSosReturn = false; // Flag untuk menandai kembali dari SOS
+
+    private boolean isFirstLoad = true;
+    private boolean isTtsInProgress = false;
+
+    private Handler weatherRefreshHandler = new Handler(Looper.getMainLooper());
+    private Runnable weatherRefreshRunnable;
+    private static final long WEATHER_REFRESH_INTERVAL = 300000;
+
+    private Handler clockHandler = new Handler(Looper.getMainLooper());
+    private Runnable clockRunnable;
+
+    private static final long CLOCK_UPDATE_INTERVAL = 1000;
+
+    private boolean useRealTimeClock = true; // true kalo mau gunakan jam real-time, false ambil dari api
+
     private boolean isNavigatingProgrammatically = false;
 
     @Override
@@ -63,14 +82,16 @@ public class MainActivity extends AppCompatActivity {
         initViews();
         setupBottomNavigation();
         setupSosButton();
-        loadWeatherData(); // Load weather data
-
-
         setupAccessibilityFeatures();
+        loadWeatherData();
+        setupWeatherAutoRefresh();
+
+        if (useRealTimeClock) {
+            startClock();
+        }
     }
 
     private void initViews() {
-        // Inisialisasi views untuk UI cuaca baru
         textViewCity = findViewById(R.id.textViewCity);
         textViewTime = findViewById(R.id.textViewTime);
         textViewWeatherCondition = findViewById(R.id.textViewWeatherCondition);
@@ -78,13 +99,13 @@ public class MainActivity extends AppCompatActivity {
         textViewWeatherDetails = findViewById(R.id.textViewWeatherDetails);
         textViewAlertInfo = findViewById(R.id.textViewAlertInfo);
 
+
         bottomNavigationView = findViewById(R.id.bottomNavigation);
         buttonSos = findViewById(R.id.buttonSos);
     }
 
     private void setupBottomNavigation() {
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
-            // Hindari pemrosesan ulang jika navigasi sedang dilakukan secara programmatic
             if (isNavigatingProgrammatically) {
                 isNavigatingProgrammatically = false;
                 return true;
@@ -93,10 +114,9 @@ public class MainActivity extends AppCompatActivity {
             int itemId = item.getItemId();
 
             if (itemId == R.id.nav_home) {
-                // Jika ada fragment di backstack, kembalikan ke tampilan utama
                 if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
                     getSupportFragmentManager().popBackStack();
-                    showMainContent(false); // Jangan set selected item lagi
+                    showMainContent(false);
                 }
                 return true;
             } else if (itemId == R.id.nav_profile) {
@@ -116,12 +136,61 @@ public class MainActivity extends AppCompatActivity {
         buttonSos.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, SosActivity.class);
             intent.putExtra("DISABILITY_TYPE", disabilityType);
-            startActivity(intent);
+            // Gunakan startActivityForResult agar bisa mendeteksi ketika kembali dari SOS
+            startActivityForResult(intent, REQUEST_SOS_CODE);
         });
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        // Cek apakah ini kembali dari SOS Activity
+        if (requestCode == REQUEST_SOS_CODE && resultCode == RESULT_OK) {
+            // Cek apakah dari SOS
+            if (data != null && data.getBooleanExtra("FROM_SOS", false)) {
+                isSosReturn = true;
+                // Log untuk debug
+                Log.d(TAG, "Kembali dari SOS Activity");
+            }
+        }
+    }
+
+    // Menambahkan fitur jam real-time jika diaktifkan
+    private void startClock() {
+        clockRunnable = new Runnable() {
+            @Override
+            public void run() {
+                updateCurrentTime();
+                clockHandler.postDelayed(this, CLOCK_UPDATE_INTERVAL);
+            }
+        };
+        clockHandler.post(clockRunnable);
+    }
+
+    // Update jam real-time
+    private void updateCurrentTime() {
+        if (textViewTime != null) {
+            SimpleDateFormat timeFormat = new SimpleDateFormat("HH.mm", new Locale("id", "ID"));
+            String currentTime = timeFormat.format(new Date());
+            textViewTime.setText(currentTime);
+        }
+    }
+
+    private void setupWeatherAutoRefresh() {
+        weatherRefreshRunnable = new Runnable() {
+            @Override
+            public void run() {
+                Log.d(TAG, "Auto refresh data cuaca");
+                isFirstLoad = false;
+                loadWeatherData();
+                // Jadwal refresh berikutnya setiap 5 menit
+                weatherRefreshHandler.postDelayed(this, WEATHER_REFRESH_INTERVAL);
+            }
+        };
+        weatherRefreshHandler.postDelayed(weatherRefreshRunnable, WEATHER_REFRESH_INTERVAL);
+    }
+
     private void setupAccessibilityFeatures() {
-        // Set up text-to-speech for visually impaired users
         if (disabilityType == 1) { // Tunanetra
             textToSpeech = new TextToSpeech(this, status -> {
                 if (status == TextToSpeech.SUCCESS) {
@@ -129,19 +198,38 @@ public class MainActivity extends AppCompatActivity {
                     if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
                         textToSpeech.setLanguage(Locale.ENGLISH);
                     }
+
+                    // Tambahkan listener untuk mendeteksi kapan TTS selesai
+                    textToSpeech.setOnUtteranceProgressListener(new android.speech.tts.UtteranceProgressListener() {
+                        @Override
+                        public void onStart(String utteranceId) {
+                            isTtsInProgress = true;
+                        }
+
+                        @Override
+                        public void onDone(String utteranceId) {
+                            isTtsInProgress = false;
+                        }
+
+                        @Override
+                        public void onError(String utteranceId) {
+                            isTtsInProgress = false;
+                        }
+                    });
+
                     speakWelcome();
                 }
             });
         }
 
-        // For hearing impaired users, use strong visual cues
+
         if (disabilityType == 2) { // Tunarungu
             textViewCity.setTextSize(40);
             textViewWeatherCondition.setTextSize(36);
             textViewAlertInfo.setTextSize(20);
         }
 
-        // For users with mobility impairment, make buttons larger
+
         if (disabilityType == 3) { // Tunadaksa
             buttonSos.setPadding(32, 32, 32, 32);
         }
@@ -155,44 +243,58 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadWeatherData() {
-        // Tampilkan data loading
-        textViewCity.setText("Memuat...");
-        textViewTime.setText("");
-        textViewWeatherCondition.setText("Memuat data cuaca");
-        textViewTemperatureBig.setText("--°");
-        textViewWeatherDetails.setText("T:--° R:--%");
-        textViewAlertInfo.setText("Memuat informasi peringatan...");
+        if (textViewCity.getText().equals("Error")) {
+            textViewCity.setText("Memuat...");
+            if (!useRealTimeClock) {
+                textViewTime.setText("");
+            }
+            textViewWeatherCondition.setText("Memuat data cuaca");
+            textViewTemperatureBig.setText("--°");
+            textViewWeatherDetails.setText("T:--° R:--%");
+            textViewAlertInfo.setText("Memuat informasi peringatan...");
+        }
 
-        // Buat instance dari WeatherApiService
+
         WeatherApiService apiService = WeatherApiClient.getWeatherService();
 
-        // Lakukan panggilan API dengan kode wilayah yang Anda berikan
+
         Call<WeatherResponse> call = apiService.getWeatherForecast("73.71.14.1001");
 
-        // Eksekusi panggilan API secara asynchronous
+        // Log waktu request
+        Log.d(TAG, "Memanggil API cuaca: " + new Date().toString());
+
+
         call.enqueue(new Callback<WeatherResponse>() {
             @Override
             public void onResponse(Call<WeatherResponse> call, Response<WeatherResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    // Mendapatkan data respons
                     WeatherResponse weatherData = response.body();
                     displayWeatherData(weatherData);
+
+
+                    SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss", new Locale("id", "ID"));
+                    String currentTime = sdf.format(new Date());
+          
+
+                    Log.d(TAG, "API berhasil dimuat: " + response.code());
                 } else {
-                    // Menampilkan pesan error jika ada masalah dengan respons
                     textViewCity.setText("Error");
                     textViewWeatherCondition.setText("Gagal memuat data cuaca");
                     textViewAlertInfo.setText("Gagal memuat data cuaca. Kode: " + response.code());
-                    Log.e(TAG, "Error: " + response.message());
+                    Log.e(TAG, "Error: " + response.message() + ", kode: " + response.code());
                 }
             }
 
             @Override
             public void onFailure(Call<WeatherResponse> call, Throwable t) {
-                // Menampilkan pesan error jika panggilan gagal
                 textViewCity.setText("Error");
                 textViewWeatherCondition.setText("Koneksi gagal");
-                textViewAlertInfo.setText("Gagal terhubung ke server BMKG. Periksa koneksi Anda.");
-                Log.e(TAG, "Failure: " + t.getMessage());
+                String errorMsg = "Gagal terhubung ke server BMKG. Periksa koneksi Anda.";
+                if (t.getMessage() != null) {
+                    errorMsg += "\nDetail error: " + t.getMessage();
+                }
+                textViewAlertInfo.setText(errorMsg);
+                Log.e(TAG, "Failure: " + t.getMessage(), t);
                 t.printStackTrace();
             }
         });
@@ -200,23 +302,26 @@ public class MainActivity extends AppCompatActivity {
 
     private void displayWeatherData(WeatherResponse weatherData) {
         try {
-            // Pastikan data tidak null dan memiliki struktur yang valid
             if (weatherData != null && weatherData.getLokasi() != null &&
                     weatherData.getData() != null && !weatherData.getData().isEmpty()) {
 
-                // Ambil lokasi
                 WeatherResponse.LocationInfo lokasi = weatherData.getLokasi();
 
-                // Ambil data cuaca dari array 2D - ambil data terbaru (hari ini jam ini)
+
                 WeatherResponse.DataItem dataItem = weatherData.getData().get(0);
                 if (dataItem.getCuaca() != null && !dataItem.getCuaca().isEmpty() &&
                         !dataItem.getCuaca().get(0).isEmpty()) {
 
                     WeatherResponse.WeatherItem currentWeather = dataItem.getCuaca().get(0).get(0);
 
-                    // Set data ke UI seperti di screenshot
+
                     textViewCity.setText(lokasi.getKotkab());
-                    textViewTime.setText(formatLocalTime(currentWeather.getLocalDatetime()));
+
+
+                    if (!useRealTimeClock) {
+                        textViewTime.setText(formatLocalTime(currentWeather.getLocalDatetime()));
+                    }
+
                     textViewWeatherCondition.setText(currentWeather.getWeatherDescription());
                     textViewTemperatureBig.setText(currentWeather.getTemperature() + "°");
 
@@ -226,15 +331,25 @@ public class MainActivity extends AppCompatActivity {
                             currentWeather.getHumidity());
                     textViewWeatherDetails.setText(weatherDetails);
 
-                    // Tambahkan informasi peringatan jika ada hujan atau cuaca ekstrem
+
                     updateAlertInfo(currentWeather);
 
-                    // Jika pengguna tunanetra, bacakan informasi cuaca
-                    if (disabilityType == 1 && textToSpeech != null) {
+                    // Log waktu update data terakhir
+                    Log.d(TAG, "Data cuaca diperbarui pada: " + new Date().toString());
+
+                    // Jangan bacakan informasi cuaca jika kembali dari SOS
+                    if (!isSosReturn && disabilityType == 1 && textToSpeech != null && (isFirstLoad || !isTtsInProgress)) {
                         String speechText = "Kondisi cuaca di " + lokasi.getKotkab() + " saat ini adalah " +
                                 currentWeather.getWeatherDescription() +
                                 " dengan suhu " + currentWeather.getTemperature() + " derajat celcius.";
-                        textToSpeech.speak(speechText, TextToSpeech.QUEUE_ADD, null, "weather_info");
+                        textToSpeech.speak(speechText, TextToSpeech.QUEUE_FLUSH, null, "weather_info");
+
+                        // Tandai bahwa load pertama telah selesai
+                        isFirstLoad = false;
+                    } else if (isSosReturn) {
+                        // Reset flag SOS return setelah digunakan
+                        isSosReturn = false;
+                        isFirstLoad = false;
                     }
                 } else {
                     textViewCity.setText("Error");
@@ -267,7 +382,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showFragmentHideMainContent() {
-        // Buat instance fragment tutorial
         TutorialFragment tutorialFragment = TutorialFragment.newInstance(disabilityType);
 
         // Dapatkan referensi view dari layout
@@ -291,7 +405,7 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(this, "Menampilkan tutorial mitigasi bencana", Toast.LENGTH_SHORT).show();
     }
 
-    // Metode yang diperbaiki untuk menampilkan kembali konten utama
+
     private void showMainContent(boolean updateSelectedItem) {
         // Dapatkan referensi view dari layout
         FrameLayout contentFrame = findViewById(R.id.content_frame);
@@ -309,6 +423,11 @@ public class MainActivity extends AppCompatActivity {
         if (updateSelectedItem) {
             isNavigatingProgrammatically = true;
             bottomNavigationView.setSelectedItemId(R.id.nav_home);
+
+            // Jangan jalankan TTS "Kembali ke beranda" jika kembali dari SOS
+            if (!isSosReturn && disabilityType == 1 && textToSpeech != null && !isTtsInProgress) {
+                textToSpeech.speak("Kembali ke beranda", TextToSpeech.QUEUE_FLUSH, null, "back_to_home");
+            }
         }
     }
 
@@ -340,8 +459,8 @@ public class MainActivity extends AppCompatActivity {
 
             textViewAlertInfo.setText(alertMessage);
 
-            // Bacakan peringatan untuk pengguna tunanetra
-            if (disabilityType == 1 && textToSpeech != null) {
+            // Jangan bacakan peringatan jika kembali dari SOS
+            if (!isSosReturn && disabilityType == 1 && textToSpeech != null && !isTtsInProgress && !isFirstLoad) {
                 textToSpeech.speak(alertMessage, TextToSpeech.QUEUE_ADD, null, "alert_info");
             }
         } else if (weatherDesc.contains("berawan")) {
@@ -353,10 +472,41 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
+        // Bersihkan handler auto-refresh
+        if (weatherRefreshHandler != null && weatherRefreshRunnable != null) {
+            weatherRefreshHandler.removeCallbacks(weatherRefreshRunnable);
+        }
+
+        // Bersihkan handler jam
+        if (clockHandler != null && clockRunnable != null) {
+            clockHandler.removeCallbacks(clockRunnable);
+        }
+
         if (textToSpeech != null) {
             textToSpeech.stop();
             textToSpeech.shutdown();
         }
         super.onDestroy();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (useRealTimeClock && clockHandler != null && clockRunnable != null) {
+            clockHandler.post(clockRunnable);
+        }
+
+        // Hanya muat ulang data cuaca jika ini bukan pertama kali dan bukan kembali dari SOS
+        if (!isFirstLoad && !isSosReturn) {
+            loadWeatherData();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (clockHandler != null && clockRunnable != null) {
+            clockHandler.removeCallbacks(clockRunnable);
+        }
     }
 }

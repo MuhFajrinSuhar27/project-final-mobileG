@@ -76,7 +76,7 @@ public class TutorialFragment extends Fragment {
     private void setupAccessibilityFeatures() {
         accessibilityHelper = new AccessibilityHelper(requireContext(), disabilityType);
 
-        // For visually impaired users, set up text-to-speech
+
         if (disabilityType == 1) {
             textToSpeech = new TextToSpeech(requireContext(), status -> {
                 if (status == TextToSpeech.SUCCESS) {

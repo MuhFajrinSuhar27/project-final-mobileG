@@ -59,7 +59,7 @@ public class SosActivity extends AppCompatActivity {
         initViews();
         setupAccessibilityFeatures();
         initLocationTracker();
-        startEmergencyProtocol();
+
     }
 
     private void initViews() {
@@ -70,12 +70,11 @@ public class SosActivity extends AppCompatActivity {
         buttonCallDirect = findViewById(R.id.buttonCallDirect);
         buttonCancelSos = findViewById(R.id.buttonCancelSos);
 
-        buttonCallDirect.setOnClickListener(v -> callEmergencyNumber());
+
         buttonCancelSos.setOnClickListener(v -> cancelEmergency());
     }
 
     private void setupAccessibilityFeatures() {
-        // Set up text-to-speech for visually impaired users
         if (disabilityType == 1) { // Tunanetra
             textToSpeech = new TextToSpeech(this, status -> {
                 if (status == TextToSpeech.SUCCESS) {
@@ -88,20 +87,19 @@ public class SosActivity extends AppCompatActivity {
             });
         }
 
-        // For hearing impaired users, use strong visual cues
-        if (disabilityType == 2) { // Tunarungu
-            // Meningkatkan ukuran teks dan kontras
+
+        if (disabilityType == 2) {
             textViewSosDescription.setTextSize(24);
             textViewSosStatus.setTextSize(20);
         }
 
-        // For users with mobility impairment, make buttons larger
+
         if (disabilityType == 3) { // Tunadaksa
             buttonCallDirect.setPadding(24, 24, 24, 24);
             buttonCancelSos.setPadding(24, 24, 24, 24);
         }
 
-        // For users with cognitive impairments, make text simpler
+
         if (disabilityType == 4) { // Tunagrahita
             textViewSosDescription.setText("BANTUAN DARURAT SEDANG DIKIRIM");
             textViewSosStatus.setText("TUNGGU SEBENTAR...");
@@ -110,8 +108,8 @@ public class SosActivity extends AppCompatActivity {
 
     private void speakEmergencyInfo() {
         if (textToSpeech != null && disabilityType == 1) {
-            String emergencyMessage = "Mode darurat aktif. Sinyal bantuan sedang dikirim. Lokasi Anda sedang dikirim ke layanan darurat. " +
-                    "Tekan tombol di bagian tengah untuk menghubungi petugas darurat secara langsung.";
+            String emergencyMessage = "Mode darurat aktif. Sinyal bantuan sedang dikirim. Lokasi Anda sedang dikirim ke layanan darurat, Mohon Ditunggu ";
+
             textToSpeech.speak(emergencyMessage, TextToSpeech.QUEUE_FLUSH, null, "emergency");
         }
     }
@@ -134,7 +132,7 @@ public class SosActivity extends AppCompatActivity {
                 if (location != null) {
                     String locationInfo = "Lokasi Anda: " + location.getLatitude() +
                             ", " + location.getLongitude() +
-                            "\nLokasi ini sedang dikirim ke layanan darurat";
+                            "\nLokasi ini sedang dikirim ke layanan darurat, Mohon di tunggu";
                     textViewLocationInfo.setText(locationInfo);
                     sendEmergencyMessage(location);
                 } else {
@@ -143,6 +141,8 @@ public class SosActivity extends AppCompatActivity {
             });
         }
     }
+
+
 
     private void sendEmergencyMessage(Location location) {
         try {
@@ -181,75 +181,53 @@ public class SosActivity extends AppCompatActivity {
                 Log.e("SosActivity", "Gagal menyimpan SOS call!");
             }
 
-            // Simulasi mengirim pesan darurat
             new Handler(Looper.getMainLooper()).postDelayed(() -> {
                 isEmergencyMessageSent = true;
-                textViewSosStatus.setText("Sinyal darurat telah dikirim! Petugas akan segera menghubungi Anda.");
 
-                if (disabilityType == 1 && textToSpeech != null) { // Tunanetra
-                    textToSpeech.speak("Sinyal darurat telah dikirim! Petugas akan segera menghubungi Anda.",
-                            TextToSpeech.QUEUE_FLUSH, null, "sent");
-                }
-
-                // Tambahkan timer untuk kembali ke halaman utama setelah 5 detik
-                new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                    // Menampilkan toast sebelum kembali
-                    Toast.makeText(this, "Kembali ke halaman utama", Toast.LENGTH_SHORT).show();
-
-                    // Text to speech untuk pengguna tunanetra
-                    if (disabilityType == 1 && textToSpeech != null) {
-                        textToSpeech.speak("Kembali ke halaman utama",
-                                TextToSpeech.QUEUE_FLUSH, null, "return");
-                    }
-
-                    // Kembali ke MainActivity
-                    Intent intent = new Intent(SosActivity.this, MainActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // Hapus activity stack sebelumnya
-                    startActivity(intent);
-                    finish(); // Tutup SosActivity
-                }, 6000); // 5000 ms = 5 detik
-
-            }, 3000);
+                startReturnToMainTimer(5);
+            }, 6000);
         } catch (Exception e) {
             Log.e("SosActivity", "Error saat mengirim emergency message: " + e.getMessage());
             e.printStackTrace();
+
+
+            startReturnToMainTimer(4);
         }
     }
+    private CountDownTimer returnToMainTimer;
 
-    private void startEmergencyProtocol() {
-        sosTimer = new CountDownTimer(10000, 1000) {
+    private void startReturnToMainTimer(int seconds) {
+        if (returnToMainTimer != null) {
+            returnToMainTimer.cancel();
+        }
+
+        final long totalTime = seconds * 1000;
+        final long interval = 1000;
+
+        returnToMainTimer = new CountDownTimer(totalTime, interval) {
             @Override
             public void onTick(long millisUntilFinished) {
-                int secondsRemaining = (int) (millisUntilFinished / 1000);
-                textViewSosStatus.setText("Menghubungi layanan darurat dalam " + secondsRemaining + " detik...");
+                int secondsLeft = (int) (millisUntilFinished / 1000);
+                textViewSosStatus.setText("Kembali ke halaman utama dalam " + secondsLeft + " detik...");
 
-                if (disabilityType == 1 && textToSpeech != null && secondsRemaining == 5) {
-                    textToSpeech.speak("Peringatan: Panggilan otomatis ke layanan darurat dalam 5 detik.",
-                            TextToSpeech.QUEUE_FLUSH, null, "countdown");
-                }
+
+
             }
 
             @Override
             public void onFinish() {
-                if (!isFinishing()) {
-                    callEmergencyNumber();
-                }
+                Toast.makeText(SosActivity.this, "Kembali ke halaman utama", Toast.LENGTH_SHORT).show();
+
+                Intent resultIntent = new Intent();
+                resultIntent.putExtra("FROM_SOS", true);
+                setResult(RESULT_OK, resultIntent);
+
+                Intent intent = new Intent(SosActivity.this, MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                finish();
             }
         }.start();
-    }
-
-    private void callEmergencyNumber() {
-        Intent callIntent = new Intent(Intent.ACTION_CALL);
-        callIntent.setData(Uri.parse("tel:" + EMERGENCY_NUMBER));
-
-        if (ActivityCompat.checkSelfPermission(this,
-                Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.CALL_PHONE},
-                    PERMISSION_REQUEST_CODE);
-        } else {
-            startActivity(callIntent);
-        }
     }
 
     private void cancelEmergency() {
@@ -263,38 +241,19 @@ public class SosActivity extends AppCompatActivity {
             textToSpeech.speak("Permintaan bantuan darurat dibatalkan",
                     TextToSpeech.QUEUE_FLUSH, null, "cancel");
         }
-
-        // Delay before finishing to ensure message is heard
-        new Handler(Looper.getMainLooper()).postDelayed(this::finish, 2000);
+        startReturnToMainTimer(2);
     }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == PERMISSION_REQUEST_CODE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                if (permissions[0].equals(Manifest.permission.ACCESS_FINE_LOCATION)) {
-                    getAndSendLocation();
-                } else if (permissions[0].equals(Manifest.permission.CALL_PHONE)) {
-                    callEmergencyNumber();
-                }
-            } else {
-                Toast.makeText(this, "Izin diperlukan untuk fungsi darurat", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
-
 
     @Override
     protected void onDestroy() {
-        if (textToSpeech != null) {
-            textToSpeech.stop();
+        if (returnToMainTimer != null) {returnToMainTimer.cancel();
+            returnToMainTimer = null;
+        }
+        if (textToSpeech != null) {textToSpeech.stop();
             textToSpeech.shutdown();
         }
-        if (sosTimer != null) {
-            sosTimer.cancel();
-        }
-        super.onDestroy();
+
+        if (sosTimer != null) {sosTimer.cancel();
+        }super.onDestroy();
     }
 }
