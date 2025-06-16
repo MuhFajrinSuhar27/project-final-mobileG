@@ -189,13 +189,16 @@ public class MainActivity extends AppCompatActivity {
         };
         weatherRefreshHandler.postDelayed(weatherRefreshRunnable, WEATHER_REFRESH_INTERVAL);
     }
-
     private void setupAccessibilityFeatures() {
+        Log.d(TAG, "Setting up accessibility features, disability type: " + disabilityType);
+
         if (disabilityType == 1) { // Tunanetra
+            Log.d(TAG, "Initializing TTS for blind users");
             textToSpeech = new TextToSpeech(this, status -> {
                 if (status == TextToSpeech.SUCCESS) {
                     int result = textToSpeech.setLanguage(new Locale("id", "ID"));
                     if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                        // Fallback ke bahasa Inggris
                         textToSpeech.setLanguage(Locale.ENGLISH);
                     }
 
@@ -220,18 +223,20 @@ public class MainActivity extends AppCompatActivity {
                     speakWelcome();
                 }
             });
+        } else {
+            // Pastikan textToSpeech adalah null untuk jenis disabilitas selain tunanetra
+            Log.d(TAG, "TTS disabled for non-blind users (type: " + disabilityType + ")");
+            textToSpeech = null;
+            isTtsInProgress = false;
         }
 
-
+        // Penyesuaian UI untuk disabilitas lainnya
         if (disabilityType == 2) { // Tunarungu
-            textViewCity.setTextSize(40);
-            textViewWeatherCondition.setTextSize(36);
-            textViewAlertInfo.setTextSize(20);
+            buttonSos.setPadding(12, 12, 12, 12);
         }
-
 
         if (disabilityType == 3) { // Tunadaksa
-            buttonSos.setPadding(32, 32, 32, 32);
+            buttonSos.setPadding(12, 12, 12, 12);
         }
     }
 
@@ -274,7 +279,7 @@ public class MainActivity extends AppCompatActivity {
 
                     SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss", new Locale("id", "ID"));
                     String currentTime = sdf.format(new Date());
-          
+
 
                     Log.d(TAG, "API berhasil dimuat: " + response.code());
                 } else {
@@ -405,7 +410,6 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(this, "Menampilkan tutorial mitigasi bencana", Toast.LENGTH_SHORT).show();
     }
 
-
     private void showMainContent(boolean updateSelectedItem) {
         // Dapatkan referensi view dari layout
         FrameLayout contentFrame = findViewById(R.id.content_frame);
@@ -424,7 +428,7 @@ public class MainActivity extends AppCompatActivity {
             isNavigatingProgrammatically = true;
             bottomNavigationView.setSelectedItemId(R.id.nav_home);
 
-            // Jangan jalankan TTS "Kembali ke beranda" jika kembali dari SOS
+            // Jangan jalankan TTS "Kembali ke beranda" jika kembali dari SOS atau bukan tunanetra
             if (!isSosReturn && disabilityType == 1 && textToSpeech != null && !isTtsInProgress) {
                 textToSpeech.speak("Kembali ke beranda", TextToSpeech.QUEUE_FLUSH, null, "back_to_home");
             }

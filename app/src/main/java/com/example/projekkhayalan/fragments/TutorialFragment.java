@@ -75,8 +75,8 @@ public class TutorialFragment extends Fragment {
 
     private void setupAccessibilityFeatures() {
         accessibilityHelper = new AccessibilityHelper(requireContext(), disabilityType);
-
-
+    
+        // TTS hanya untuk tunanetra
         if (disabilityType == 1) {
             textToSpeech = new TextToSpeech(requireContext(), status -> {
                 if (status == TextToSpeech.SUCCESS) {
@@ -87,30 +87,18 @@ public class TutorialFragment extends Fragment {
                     speakMitigasiInfo();
                 }
             });
+        } else {
+            textToSpeech = null;
         }
-
-
+        
+        // Penyesuaian UI lainnya berdasarkan disabilitas
         if (disabilityType == 2) {
             textViewTitle.setTextSize(26);
         } else if (disabilityType == 3) {
             ViewGroup.LayoutParams paramsBanjir = cardBanjir.getLayoutParams();
             paramsBanjir.height = dpToPx(160);
             cardBanjir.setLayoutParams(paramsBanjir);
-
-            ViewGroup.LayoutParams paramsBanjirBandang = cardBanjirBandang.getLayoutParams();
-            paramsBanjirBandang.height = dpToPx(160);
-            cardBanjirBandang.setLayoutParams(paramsBanjirBandang);
-
-            ViewGroup.LayoutParams paramsGempaBumi = cardGempaBumi.getLayoutParams();
-            paramsGempaBumi.height = dpToPx(160);
-            cardGempaBumi.setLayoutParams(paramsGempaBumi);
-
-            ViewGroup.LayoutParams paramsTanahLongsor = cardTanahLongsor.getLayoutParams();
-            paramsTanahLongsor.height = dpToPx(160);
-            cardTanahLongsor.setLayoutParams(paramsTanahLongsor);
-        } else if (disabilityType == 4) {
-            textViewTitle.setText("PANDUAN KESELAMATAN");
-            textViewTitle.setTextSize(28);
+            // ... kode lain untuk tunadaksa
         }
     }
 

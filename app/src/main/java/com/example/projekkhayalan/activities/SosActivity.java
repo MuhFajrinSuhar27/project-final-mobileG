@@ -75,7 +75,11 @@ public class SosActivity extends AppCompatActivity {
     }
 
     private void setupAccessibilityFeatures() {
+        Log.d("SosActivity", "Setting up accessibility features, disability type: " + disabilityType);
+        
+        // Text-to-Speech hanya untuk tunanetra
         if (disabilityType == 1) { // Tunanetra
+            Log.d("SosActivity", "Initializing TTS for blind users");
             textToSpeech = new TextToSpeech(this, status -> {
                 if (status == TextToSpeech.SUCCESS) {
                     int result = textToSpeech.setLanguage(new Locale("id", "ID"));
@@ -85,21 +89,23 @@ public class SosActivity extends AppCompatActivity {
                     speakEmergencyInfo();
                 }
             });
+        } else {
+            // Pastikan textToSpeech adalah null untuk jenis disabilitas selain tunanetra
+            Log.d("SosActivity", "TTS disabled for non-blind users (type: " + disabilityType + ")");
+            textToSpeech = null;
         }
-
-
-        if (disabilityType == 2) {
+    
+        // Penyesuaian untuk disabilitas lain
+        if (disabilityType == 2) { // Tunarungu
             textViewSosDescription.setTextSize(24);
             textViewSosStatus.setTextSize(20);
         }
-
-
+    
         if (disabilityType == 3) { // Tunadaksa
             buttonCallDirect.setPadding(24, 24, 24, 24);
             buttonCancelSos.setPadding(24, 24, 24, 24);
         }
-
-
+    
         if (disabilityType == 4) { // Tunagrahita
             textViewSosDescription.setText("BANTUAN DARURAT SEDANG DIKIRIM");
             textViewSosStatus.setText("TUNGGU SEBENTAR...");
