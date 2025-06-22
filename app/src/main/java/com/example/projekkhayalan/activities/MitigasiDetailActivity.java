@@ -116,16 +116,16 @@ public class MitigasiDetailActivity extends AppCompatActivity implements Mitigas
 
         switch (disasterType.toLowerCase()) {
             case "banjir":
-                imageResource = R.drawable.ic_launcher_background; // ganti dengan image banjir
+                imageResource = R.drawable.banjir_umumv2; // ganti dengan image banjir
                 break;
             case "gempa bumi":
-                imageResource = R.drawable.ic_launcher_background; // ganti dengan image gempa
+                imageResource = R.drawable.gempa_bumi_umum; // ganti dengan image gempa
                 break;
             case "banjir bandang":
-            imageResource = R.drawable.ic_launcher_background; // ganti dengan gambar banjir bandang
+            imageResource = R.drawable.banjir_umum_tunadaksa; // ganti dengan gambar banjir bandang
                 break;
             case "tanah longsor":
-                imageResource = R.drawable.ic_launcher_background; // ganti dengan gambar tanah longsor
+                imageResource = R.drawable.landslide_umum; // ganti dengan gambar tanah longsor
                 break;
         }
 
@@ -198,21 +198,21 @@ public class MitigasiDetailActivity extends AppCompatActivity implements Mitigas
                         "• Pasang penanda taktil/suara pada jalur evakuasi\n" +
                         "• Susun perabotan agar tidak menghalangi jalur evakuasi\n" +
                         "• Simpan tongkat cadangan di beberapa lokasi strategis",
-                        R.drawable.ic_launcher_background, 1));
+                        R.drawable.gempa_bumi_step1, 1));
         
                     steps.add(new MitigasiStep("Saat Gempa - Tunanetra",
                         "• Berlindung di bawah meja kuat dan jauh dari kaca\n" +
                         "• Gunakan tangan untuk melindungi kepala dan leher\n" +
                         "• Deteksi suara retakan dan perubahan struktur bangunan\n" +
                         "• Tunggu instruksi verbal atau minta bantuan setelah guncangan berhenti",
-                        R.drawable.ic_launcher_background, 2));
+                        R.drawable.gempa_bumi_step2, 2));
         
                     steps.add(new MitigasiStep("Setelah Gempa - Tunanetra",
                         "• Gunakan tongkat untuk mendeteksi reruntuhan dan benda jatuh\n" +
                         "• Ikuti dinding dan gunakan teknik pelindung saat bergerak\n" +
                         "• Berkomunikasi dengan suara jika terperangkap\n" +
                         "• Minta bantuan untuk evakuasi dan inspeksi kerusakan",
-                        R.drawable.ic_launcher_background, 3));
+                        R.drawable.gempa_bumi_step3, 3));
                 }
                 else if (disasterType.equalsIgnoreCase("banjir bandang")) {
                     steps.add(new MitigasiStep("Sebelum Banjir Bandang - Tunanetra",
@@ -242,21 +242,21 @@ public class MitigasiDetailActivity extends AppCompatActivity implements Mitigas
                         "• Pasang sensor getaran dengan peringatan suara\n" +
                         "• Hafal jalur evakuasi dengan menghitung langkah\n" +
                         "• Siapkan tongkat navigasi tahan benturan",
-                        R.drawable.ic_launcher_background, 1));
+                        R.drawable.tanah_longsor_step1, 1));
         
                     steps.add(new MitigasiStep("Saat Tanah Longsor - Tunanetra",
                         "• Evakuasi horizontal (menyamping) bukan ke bawah lereng\n" +
                         "• Kendalikan kepanikan dengan fokus pada pendengaran\n" +
                         "• Lindungi kepala dan area vital dari puing\n" +
                         "• Gunakan suara untuk memberitahu lokasi Anda",
-                        R.drawable.ic_launcher_background, 2));
+                        R.drawable.tanah_longsor_step2, 2));
         
                     steps.add(new MitigasiStep("Setelah Tanah Longsor - Tunanetra",
                         "• Gunakan tongkat untuk mendeteksi ketidakstabilan tanah\n" +
                         "• Hindari area yang masih bersuara gemuruh atau bergerak\n" +
                         "• Minta bantuan untuk navigasi area berbahaya\n" +
                         "• Laporkan lokasi Anda dengan deskripsi suara yang jelas",
-                        R.drawable.ic_launcher_background, 3));
+                        R.drawable.tanah_longsor_step3, 3));
                 }
             break;
                 
@@ -356,19 +356,19 @@ public class MitigasiDetailActivity extends AppCompatActivity implements Mitigas
                         "• Identifikasi rute evakuasi yang aksesibel kursi roda\n" +
                         "• Siapkan alat bantu mobilitas cadangan di tempat tinggi\n" +
                         "• Pastikan pengaman kursi roda berfungsi dengan baik",
-                        R.drawable.ic_launcher_background, 1));
+                        R.drawable.sebelum_banjir_tunadaksa, 1));
         
                     steps.add(new MitigasiStep("Saat Banjir - Tunadaksa",
                         "• Gunakan pelampung khusus untuk pengguna kursi roda jika tersedia\n" +
                         "• Pindah ke lantai yang lebih tinggi jika memungkinkan\n" +
                         "• Gunakan aplikasi SOS yang dapat diakses",
-                        R.drawable.ic_launcher_background, 2));
+                        R.drawable.saat_banjir_tunadaksa, 2));
         
                     steps.add(new MitigasiStep("Setelah Banjir - Tunadaksa",
                         "• Periksa peralatan mobilitas dari kerusakan\n" +
                         "• Hindari area dengan reruntuhan yang sulit dilewati\n" +
                         "• Catat kontak penyedia alat bantu mobilitas untuk perbaikan",
-                        R.drawable.ic_launcher_background, 3));
+                        R.drawable.setelah_banjir_tunadaksa, 3));
                 }
                 else if (disasterType.equalsIgnoreCase("gempa bumi")) {
                     steps.add(new MitigasiStep("Sebelum Gempa - Tunadaksa",
@@ -394,19 +394,19 @@ public class MitigasiDetailActivity extends AppCompatActivity implements Mitigas
                         "• Siapkan jalur evakuasi yang rata dan bebas hambatan\n" +
                         "• Identifikasi tempat tinggi yang dapat diakses kursi roda\n" +
                         "• Buat kesepakatan dengan orang terdekat untuk bantuan evakuasi",
-                        R.drawable.ic_launcher_background, 1));
-        
+                        R.drawable.banjir_bandang_step1, 1));
+
                     steps.add(new MitigasiStep("Saat Banjir Bandang - Tunadaksa",
                         "• Prioritaskan mencapai tempat tinggi daripada membawa barang\n" +
                         "• Minta bantuan untuk evakuasi cepat saat tanda bahaya terdengar\n" +
                         "• Koordinasikan dengan penolong cara terbaik memindahkan Anda",
-                        R.drawable.ic_launcher_background, 2));
+                        R.drawable.banjir_bandang_step2, 2));
         
                     steps.add(new MitigasiStep("Setelah Banjir Bandang - Tunadaksa",
                         "• Periksa kursi roda atau alat bantu mobilitas dari kerusakan\n" +
                         "• Hindari melewati area berlumpur dan tidak stabil\n" +
                         "• Informasikan kebutuhan aksesibilitas di pengungsian",
-                        R.drawable.ic_launcher_background, 3));
+                        R.drawable.banjir_bandang_step3, 3));
                 }
                 else if (disasterType.equalsIgnoreCase("tanah longsor")) {
                     steps.add(new MitigasiStep("Sebelum Tanah Longsor - Tunadaksa",
