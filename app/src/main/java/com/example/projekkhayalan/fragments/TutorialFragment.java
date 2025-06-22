@@ -94,10 +94,10 @@ public class TutorialFragment extends Fragment {
 
         // Penyesuaian UI lainnya berdasarkan disabilitas
         if (disabilityType == 2) {
-            textViewTitle.setTextSize(26);
+            textViewTitle.setTextSize(6);
         } else if (disabilityType == 3) {
             ViewGroup.LayoutParams paramsBanjir = cardBanjir.getLayoutParams();
-            paramsBanjir.height = dpToPx(160);
+            paramsBanjir.height = dpToPx(60);
             cardBanjir.setLayoutParams(paramsBanjir);
             // ... kode lain untuk tunadaksa
         }
@@ -125,9 +125,9 @@ public class TutorialFragment extends Fragment {
         });
 
         cardBanjirBandang.setOnClickListener(v -> {
-            showMitigasiDetail("Banjir Bandang");
+            showMitigasiDetail("banjir bandang");
             if (textToSpeech != null && disabilityType == 1) {
-                speakMitigasiDetail("Banjir Bandang");
+                speakMitigasiDetail("banjir bandang");
             }
         });
 
@@ -139,9 +139,9 @@ public class TutorialFragment extends Fragment {
         });
 
         cardTanahLongsor.setOnClickListener(v -> {
-            showMitigasiDetail("Tanah Longsor");
+            showMitigasiDetail("tanah longsor");
             if (textToSpeech != null && disabilityType == 1) {
-                speakMitigasiDetail("Tanah Longsor");
+                speakMitigasiDetail("tanah longsor");
             }
         });
     }
@@ -152,8 +152,13 @@ public class TutorialFragment extends Fragment {
         // Buat Intent untuk membuka MitigasiDetail
         Intent intent = new Intent(requireContext(), MitigasiDetailActivity.class);
 
+
+        // Normalisasi string ke lowercase untuk konsistensi
+        String normalizedDisasterType = disasterType.toLowerCase();
+
+
         // Tambahkan data jenis bencana dan tipe disabilitas
-        intent.putExtra("DISASTER_TYPE", disasterType);
+        intent.putExtra("DISASTER_TYPE", normalizedDisasterType);
         intent.putExtra("DISABILITY_TYPE", disabilityType);
 
         // Mulai activity MitigasiDetail
@@ -166,12 +171,12 @@ public class TutorialFragment extends Fragment {
         switch (disasterType) {
             case "Banjir":
                 infoToSpeak = "Rekomendasi mitigasi banjir. " +
-                        "Sebelum banjir: Persiapkan tas darurat dan kenali jalur evakuasi. " +
-                        "Saat banjir: Matikan listrik, jangan menyentuh air, segera evakuasi ke tempat yang lebih tinggi. " +
-                        "Setelah banjir: Bersihkan rumah dan area sekitar dari kotoran dan air yang tergenang.";
+                        "• Sebelum banjir: Hafal rute evakuasi dengan menghitung langkah dan meraba penanda khusus\n" +
+                        "• Saat Banjir Tetap dekat dengan dinding untuk orientasi\n" +
+                        "• Setelah Banjir: Berhati-hati dengan reruntuhan yang mungkin tidak terdeteksi";
                 break;
 
-            case "Banjir Bandang":
+            case "banjir bandang":
                 infoToSpeak = "Rekomendasi mitigasi banjir bandang. " +
                         "Sebelum banjir bandang: Hindari tinggal di dekat aliran sungai di lereng gunung. " +
                         "Kenali tanda-tanda seperti hujan deras berkepanjangan dan suara gemuruh. " +
