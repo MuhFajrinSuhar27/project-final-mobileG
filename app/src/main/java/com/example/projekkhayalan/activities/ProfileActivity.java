@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.MenuItem;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.Toast;
@@ -253,24 +254,28 @@ public class ProfileActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.RoundedDialogTheme);
         LayoutInflater inflater = getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.dialog_admin_login, null);
-
+    
         // Inisialisasi komponen UI dari layout baru
         final TextInputEditText editUsername = dialogView.findViewById(R.id.editTextUsername);
         final TextInputEditText editPassword = dialogView.findViewById(R.id.editTextPassword);
         final RadioGroup radioGroupRole = dialogView.findViewById(R.id.radioGroupRole);
         final CheckBox checkBoxRememberMe = dialogView.findViewById(R.id.checkBoxRememberMe);
         final TextView textViewForgotPassword = dialogView.findViewById(R.id.textViewForgotPassword);
-
+        
+        // Tombol custom di dalam layout
+        Button buttonLogin = dialogView.findViewById(R.id.buttonDialogLogin);
+        Button buttonBatal = dialogView.findViewById(R.id.buttonDialogBatal);
+    
         // Cek apakah "Remember Me" aktif sebelumnya
         SharedPreferences loginPrefs = getSharedPreferences(PREF_LOGIN, MODE_PRIVATE);
         boolean rememberMe = loginPrefs.getBoolean(KEY_REMEMBER, false);
-
+        
         if (rememberMe) {
             String savedUsername = loginPrefs.getString(KEY_USERNAME, "");
             editUsername.setText(savedUsername);
             checkBoxRememberMe.setChecked(true);
         }
-
+    
         // Menangani event "Lupa Password"
         if (textViewForgotPassword != null) {
             textViewForgotPassword.setOnClickListener(v -> {
@@ -279,35 +284,32 @@ public class ProfileActivity extends AppCompatActivity {
                         Toast.LENGTH_LONG).show();
             });
         }
-
-        // Setup dialog tanpa title (sudah tersedia dalam custom layout)
-        builder.setView(dialogView)
-                .setPositiveButton("Login", null) // Null karena akan di-override nanti
-                .setNegativeButton("Batal", (dialog, id) -> dialog.cancel());
-
+    
+        // Setup dialog tanpa tombol standard AlertDialog
+        builder.setView(dialogView);
+    
         // Buat dialog
         AlertDialog dialog = builder.create();
-
+    
         // Set background transparan
         if (dialog.getWindow() != null) {
             dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         }
-
-        dialog.show();
-
-        // Override tombol positive untuk mencegah dialog menutup saat validasi gagal
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
+    
+        // Set listener untuk tombol Login
+        buttonLogin.setOnClickListener(v -> {
             String username = editUsername.getText().toString().trim();
             String password = editPassword.getText().toString().trim();
-
+    
             if (username.isEmpty() || password.isEmpty()) {
                 Toast.makeText(ProfileActivity.this,
                         "Silakan isi username dan password", Toast.LENGTH_SHORT).show();
                 return;
             }
-
-            // Selalu gunakan role "petugas" karena hanya ada satu pilihan
-            boolean isAdmin = false;
+    
+            // Cek role yang dipilih
+            boolean isAdmin = radioGroupRole != null &&
+                    radioGroupRole.getCheckedRadioButtonId() == R.id.radioButtonAdmin;
 
             // Simpan preferensi "Remember Me" jika dicentang
             if (checkBoxRememberMe != null) {
@@ -320,11 +322,11 @@ public class ProfileActivity extends AppCompatActivity {
                 }
                 loginEditor.apply();
             }
-
+    
             // Periksa login dengan database
             DatabaseHelper dbHelper = new DatabaseHelper(ProfileActivity.this);
             boolean isValid;
-
+    
             if (isAdmin) {
                 isValid = dbHelper.checkAdminLogin(username, password);
                 if (isValid) {
@@ -352,6 +354,11 @@ public class ProfileActivity extends AppCompatActivity {
                 }
             }
         });
+    
+        // Set listener untuk tombol Batal
+        buttonBatal.setOnClickListener(v -> dialog.cancel());
+        
+        dialog.show();
     }
 
     // Ubah metode setupClickListeners untuk memanggil setupLoginButton

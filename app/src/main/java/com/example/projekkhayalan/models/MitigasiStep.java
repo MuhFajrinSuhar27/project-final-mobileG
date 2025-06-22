@@ -5,7 +5,7 @@ public class MitigasiStep {
     private String description;
     private int imageResId;
     private int stepNumber;
-    private String audioUrl; // For future audio instructions
+    private String audioUrl;
 
     public MitigasiStep(String title, String description, int imageResId) {
         this.title = title;
