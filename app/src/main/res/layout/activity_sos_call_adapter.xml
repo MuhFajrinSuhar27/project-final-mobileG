@@ -3,64 +3,277 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    app:cardCornerRadius="8dp"
-    app:cardElevation="4dp">
+    android:layout_margin="12dp"
+    app:cardCornerRadius="20dp"
+    app:cardElevation="12dp"
+    app:cardBackgroundColor="@android:color/white">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:background="@drawable/sos_call_optimized_gradient"
+        android:padding="20dp">
 
-        <TextView
-            android:id="@+id/textViewWaktuPanggilan"
+        <!-- Header Section dengan Spacing yang Lebih Baik -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="28 Mei 2025, 15:30"
-            android:textStyle="bold"
-            android:textSize="16sp" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="16dp">
 
-        <TextView
-            android:id="@+id/textViewLokasiPanggilan"
+            <!-- Emergency Icon dengan Ukuran Lebih Kecil untuk Mobile -->
+
+
+            <!-- Header Text dengan Spacing yang Disesuaikan -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="10dp"
+                android:orientation="vertical">
+
+
+                <!-- Status Badge dengan Size Lebih Kecil -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    app:cardCornerRadius="10dp"
+                    app:cardBackgroundColor="#4CAF50"
+                    app:cardElevation="3dp">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:paddingTop="4dp"
+                        android:paddingBottom="4dp">
+
+
+
+                        <TextView
+                            android:id="@+id/textViewStatusPanggilan"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="AKTIF"
+                            android:textSize="9sp"
+                            android:textStyle="bold"
+                            android:textColor="@android:color/white"
+                            android:fontFamily="sans-serif-medium" />
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+            </LinearLayout>
+
+            <!-- Live Indicator yang Lebih Compact -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="8dp"
+                app:cardBackgroundColor="#33FFFFFF"
+                app:cardElevation="3dp">
+
+
+            </androidx.cardview.widget.CardView>
+        </LinearLayout>
+
+        <!-- Information Container dengan Layout yang Dioptimalkan -->
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:text="Lat: -6.2088, Long: 106.8456"
-            android:textSize="14sp" />
+            android:layout_marginBottom="16dp"
+            app:cardCornerRadius="16dp"
+            app:cardBackgroundColor="@android:color/white"
+            app:cardElevation="4dp">
 
-        <TextView
-            android:id="@+id/textViewStatusPanggilan"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <!-- Waktu dengan Layout Grid -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="10dp">
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        app:cardCornerRadius="12dp"
+                        app:cardBackgroundColor="#FFF3E0"
+                        app:cardElevation="2dp">
+
+                        <ImageView
+                            android:layout_width="14dp"
+                            android:layout_height="14dp"
+                            android:layout_gravity="center"
+                            android:src="@android:drawable/ic_menu_recent_history"
+                            app:tint="#FF9800"
+                            android:contentDescription="Icon waktu" />
+                    </androidx.cardview.widget.CardView>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="10dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Waktu"
+                            android:textSize="11sp"
+                            android:textColor="#666666"
+                            android:fontFamily="sans-serif" />
+
+                        <TextView
+                            android:id="@+id/textViewWaktuPanggilan"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="15 Jun 2025, 23:29"
+                            android:textSize="13sp"
+                            android:textStyle="bold"
+                            android:textColor="#333333"
+                            android:fontFamily="sans-serif-medium" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Lokasi dengan Layout yang Lebih Compact -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        app:cardCornerRadius="12dp"
+                        app:cardBackgroundColor="#E3F2FD"
+                        app:cardElevation="2dp">
+
+                        <ImageView
+                            android:layout_width="14dp"
+                            android:layout_height="14dp"
+                            android:layout_gravity="center"
+                            android:src="@android:drawable/ic_menu_mylocation"
+                            app:tint="#1976D2"
+                            android:contentDescription="Icon lokasi" />
+                    </androidx.cardview.widget.CardView>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="10dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Koordinat"
+                            android:textSize="11sp"
+                            android:textColor="#666666"
+                            android:fontFamily="sans-serif" />
+
+                        <TextView
+                            android:id="@+id/textViewLokasiPanggilan"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="VGW8+G44, Jl. Sanrangan I, Daya, Kec. Biringkanaya, Kota Makassar, Sulawesi Selatan 90242, Indonesia"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:textColor="#333333"
+                            android:fontFamily="sans-serif-medium"
+                            android:maxLines="3"
+                            android:ellipsize="end" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Action Buttons dengan Proporsi yang Lebih Baik -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:text="Status: aktif"
-            android:textColor="#FF5722"
-            android:textSize="14sp" />
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:weightSum="2">
 
+            <!-- Navigasi Button dengan Design yang Lebih Mobile-Friendly -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonNavigate"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="6dp"
+                android:text="📍 Navigasi"
+                android:textSize="12sp"
+                android:textAllCaps="false"
+                android:fontFamily="sans-serif-medium"
+                app:backgroundTint="#4CAF50"
+                app:cornerRadius="14dp"
+                app:elevation="6dp"
+                app:iconSize="16dp"
+                app:iconTint="@android:color/white"
+                app:strokeColor="#388E3C"
+                app:strokeWidth="1dp"
+                android:contentDescription="Buka navigasi ke lokasi panggilan darurat" />
+
+            <!-- Selesai Button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonMarkComplete"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:layout_marginStart="6dp"
+                android:text="✅ Selesai"
+                android:textSize="13sp"
+                android:textAllCaps="false"
+                android:fontFamily="sans-serif-medium"
+                app:backgroundTint="#1976D2"
+                app:cornerRadius="14dp"
+                app:elevation="6dp"
+                app:iconSize="16dp"
+                app:iconTint="@android:color/white"
+                app:strokeColor="#1565C0"
+                app:strokeWidth="1dp"
+                android:contentDescription="Tandai panggilan darurat sebagai selesai" />
+        </LinearLayout>
+
+        <!-- Footer Info dengan Text yang Lebih Kecil -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
 
-            <Button
-                android:id="@+id/buttonNavigate"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
+            <ImageView
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:src="@android:drawable/ic_dialog_info"
                 android:layout_marginEnd="4dp"
-                android:text="Navigasi"
-                android:backgroundTint="#4CAF50" />
+                app:tint="#E3F2FD"
+                android:contentDescription="Icon informasi" />
 
-            <Button
-                android:id="@+id/buttonMarkComplete"
-                android:layout_width="0dp"
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginStart="4dp"
-                android:text="Tandai Selesai"
-                android:backgroundTint="#2196F3" />
+                android:text="💡 Respons cepat dapat menyelamatkan nyawa"
+                android:textSize="10sp"
+                android:textColor="#E3F2FD"
+                android:fontFamily="sans-serif-light"
+                android:textStyle="italic" />
         </LinearLayout>
     </LinearLayout>
 </androidx.cardview.widget.CardView>

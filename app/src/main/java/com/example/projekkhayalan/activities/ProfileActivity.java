@@ -23,14 +23,17 @@ import com.google.android.material.textfield.TextInputEditText;
 
 // Import yang diperlukan
 import android.app.AlertDialog;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.example.projekkhayalan.database.DatabaseHelper;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.textfield.TextInputEditText;
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -49,13 +52,15 @@ public class ProfileActivity extends AppCompatActivity {
     private Uri selectedImageUri;
     private AccessibilityHelper accessibilityHelper;
 
-
+    // Shared Preferences untuk Remember Me
+    private static final String PREF_LOGIN = "LoginPrefs";
+    private static final String KEY_REMEMBER = "rememberUser";
+    private static final String KEY_USERNAME = "username";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
-
 
         disabilityType = getIntent().getIntExtra("DISABILITY_TYPE", 1);
 
@@ -119,7 +124,6 @@ public class ProfileActivity extends AppCompatActivity {
         }
 
         try {
-
             if (accessibilityHelper != null) {
                 accessibilityHelper.adjustUI();
             }
@@ -237,7 +241,6 @@ public class ProfileActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
     private void setupLoginButton() {
         MaterialButton buttonLogin = findViewById(R.id.buttonLogin);
         if (buttonLogin != null) {
@@ -246,67 +249,117 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void showLoginDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        // Gunakan theme custom untuk dialog dengan background transparan
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.RoundedDialogTheme);
         LayoutInflater inflater = getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.dialog_admin_login, null);
 
-        final EditText editUsername = dialogView.findViewById(R.id.editTextUsername);
-        final EditText editPassword = dialogView.findViewById(R.id.editTextPassword);
+        // Inisialisasi komponen UI dari layout baru
+        final TextInputEditText editUsername = dialogView.findViewById(R.id.editTextUsername);
+        final TextInputEditText editPassword = dialogView.findViewById(R.id.editTextPassword);
         final RadioGroup radioGroupRole = dialogView.findViewById(R.id.radioGroupRole);
+        final CheckBox checkBoxRememberMe = dialogView.findViewById(R.id.checkBoxRememberMe);
+        final TextView textViewForgotPassword = dialogView.findViewById(R.id.textViewForgotPassword);
 
+        // Cek apakah "Remember Me" aktif sebelumnya
+        SharedPreferences loginPrefs = getSharedPreferences(PREF_LOGIN, MODE_PRIVATE);
+        boolean rememberMe = loginPrefs.getBoolean(KEY_REMEMBER, false);
+
+        if (rememberMe) {
+            String savedUsername = loginPrefs.getString(KEY_USERNAME, "");
+            editUsername.setText(savedUsername);
+            checkBoxRememberMe.setChecked(true);
+        }
+
+        // Menangani event "Lupa Password"
+        if (textViewForgotPassword != null) {
+            textViewForgotPassword.setOnClickListener(v -> {
+                Toast.makeText(ProfileActivity.this,
+                        "Silahkan hubungi administrator sistem untuk reset password",
+                        Toast.LENGTH_LONG).show();
+            });
+        }
+
+        // Setup dialog tanpa title (sudah tersedia dalam custom layout)
         builder.setView(dialogView)
-                .setTitle("Login")
-                .setPositiveButton("Login", (dialog, id) -> {
-                    String username = editUsername.getText().toString().trim();
-                    String password = editPassword.getText().toString().trim();
-
-                    if (username.isEmpty() || password.isEmpty()) {
-                        Toast.makeText(ProfileActivity.this, "Silakan isi username dan password", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-
-                    // Tentukan role yang dipilih
-                    int selectedId = radioGroupRole.getCheckedRadioButtonId();
-                    boolean isAdmin = (selectedId == R.id.radioButtonAdmin);
-
-                    // Periksa login dengan database
-                    DatabaseHelper dbHelper = new DatabaseHelper(ProfileActivity.this);
-                    boolean isValid;
-
-                    if (isAdmin) {
-                        isValid = dbHelper.checkAdminLogin(username, password);
-                        if (isValid) {
-                            Toast.makeText(ProfileActivity.this, "Login admin berhasil", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(ProfileActivity.this, AdminDashboardActivity.class);
-                            startActivity(intent);
-                        } else {
-                            Toast.makeText(ProfileActivity.this, "Username atau password admin salah", Toast.LENGTH_SHORT).show();
-                        }
-                    } else {
-                        isValid = dbHelper.checkPetugasLogin(username, password);
-                        if (isValid) {
-                            Toast.makeText(ProfileActivity.this, "Login petugas berhasil", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(ProfileActivity.this, PetugasDashboardActivity.class);
-                            intent.putExtra("USERNAME_PETUGAS", username);
-                            startActivity(intent);
-                        } else {
-                            Toast.makeText(ProfileActivity.this, "Username atau password petugas salah", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                })
+                .setPositiveButton("Login", null) // Null karena akan di-override nanti
                 .setNegativeButton("Batal", (dialog, id) -> dialog.cancel());
 
+        // Buat dialog
         AlertDialog dialog = builder.create();
+
+        // Set background transparan
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        }
+
         dialog.show();
+
+        // Override tombol positive untuk mencegah dialog menutup saat validasi gagal
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
+            String username = editUsername.getText().toString().trim();
+            String password = editPassword.getText().toString().trim();
+
+            if (username.isEmpty() || password.isEmpty()) {
+                Toast.makeText(ProfileActivity.this,
+                        "Silakan isi username dan password", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // Selalu gunakan role "petugas" karena hanya ada satu pilihan
+            boolean isAdmin = false;
+
+            // Simpan preferensi "Remember Me" jika dicentang
+            if (checkBoxRememberMe != null) {
+                SharedPreferences.Editor loginEditor = getSharedPreferences(PREF_LOGIN, MODE_PRIVATE).edit();
+                loginEditor.putBoolean(KEY_REMEMBER, checkBoxRememberMe.isChecked());
+                if (checkBoxRememberMe.isChecked()) {
+                    loginEditor.putString(KEY_USERNAME, username);
+                } else {
+                    loginEditor.remove(KEY_USERNAME);
+                }
+                loginEditor.apply();
+            }
+
+            // Periksa login dengan database
+            DatabaseHelper dbHelper = new DatabaseHelper(ProfileActivity.this);
+            boolean isValid;
+
+            if (isAdmin) {
+                isValid = dbHelper.checkAdminLogin(username, password);
+                if (isValid) {
+                    Toast.makeText(ProfileActivity.this,
+                            "Login admin berhasil", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(ProfileActivity.this, AdminDashboardActivity.class);
+                    startActivity(intent);
+                    dialog.dismiss();
+                } else {
+                    Toast.makeText(ProfileActivity.this,
+                            "Username atau password admin salah", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                isValid = dbHelper.checkPetugasLogin(username, password);
+                if (isValid) {
+                    Toast.makeText(ProfileActivity.this,
+                            "Login petugas berhasil", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(ProfileActivity.this, PetugasDashboardActivity.class);
+                    intent.putExtra("USERNAME_PETUGAS", username);
+                    startActivity(intent);
+                    dialog.dismiss();
+                } else {
+                    Toast.makeText(ProfileActivity.this,
+                            "Username atau password petugas salah", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     // Ubah metode setupClickListeners untuk memanggil setupLoginButton
     private void setupClickListeners() {
         // Setup tombol lain seperti sebelumnya
+        setupClickListener(); // Metode yang berisi kode untuk tombol lain
 
         // Tambahkan ini:
         setupLoginButton();
     }
-
-
 }

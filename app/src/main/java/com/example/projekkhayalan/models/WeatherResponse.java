@@ -9,7 +9,7 @@ public class WeatherResponse {
     private LocationInfo lokasi;
 
     @SerializedName("data")
-    private List<DataItem> data;  // PERBAIKAN: Ini harusnya LIST, bukan objek tunggal
+    private List<DataItem> data;
 
     public LocationInfo getLokasi() {
         return lokasi;
@@ -66,7 +66,7 @@ public class WeatherResponse {
         private LocationInfo lokasi;
 
         @SerializedName("cuaca")
-        private List<List<WeatherItem>> cuaca;  // Array 2D untuk data cuaca
+        private List<List<WeatherItem>> cuaca;
 
         public LocationInfo getLokasi() { return lokasi; }
         public List<List<WeatherItem>> getCuaca() { return cuaca; }
@@ -76,7 +76,7 @@ public class WeatherResponse {
         @SerializedName("datetime")
         private String datetime;
 
-        @SerializedName("t") // suhu dalam Celcius
+        @SerializedName("t")
         private int temperature;
 
         @SerializedName("weather")
