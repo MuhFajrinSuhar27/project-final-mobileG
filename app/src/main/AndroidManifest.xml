@@ -17,19 +17,21 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ProjekKhayalan"
         tools:targetApi="31">
-
+        <activity
+            android:name=".activities.MitigasiDetailActivity"
+            android:exported="false" />
         <!-- SplashActivity sebagai LAUNCHER -->
         <activity
             android:name=".activities.SplashActivity"
             android:exported="true"
-            android:theme="@style/SplashTheme"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".adapters.SosCallAdapter"
             android:exported="false" />
@@ -38,14 +40,10 @@
             android:exported="false" />
         <activity
             android:name=".activities.AdminDashboardActivity"
-            android:exported="false" />
-
-        <!-- HomeScreenActivity tidak lagi sebagai launcher -->
+            android:exported="false" /> <!-- HomeScreenActivity tidak lagi sebagai launcher -->
         <activity
             android:name=".activities.HomeScreenActivity"
-            android:exported="false">
-        </activity>
-
+            android:exported="false"></activity>
         <activity
             android:name=".activities.ProfileActivity"
             android:exported="false" />

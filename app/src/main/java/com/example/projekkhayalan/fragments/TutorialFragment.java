@@ -15,6 +15,7 @@ import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
 import com.example.projekkhayalan.R;
+import com.example.projekkhayalan.activities.MitigasiDetailActivity;
 import com.example.projekkhayalan.utils.AccessibilityHelper;
 
 import java.util.Locale;
@@ -75,7 +76,7 @@ public class TutorialFragment extends Fragment {
 
     private void setupAccessibilityFeatures() {
         accessibilityHelper = new AccessibilityHelper(requireContext(), disabilityType);
-    
+
         // TTS hanya untuk tunanetra
         if (disabilityType == 1) {
             textToSpeech = new TextToSpeech(requireContext(), status -> {
@@ -90,7 +91,7 @@ public class TutorialFragment extends Fragment {
         } else {
             textToSpeech = null;
         }
-        
+
         // Penyesuaian UI lainnya berdasarkan disabilitas
         if (disabilityType == 2) {
             textViewTitle.setTextSize(26);
@@ -146,10 +147,17 @@ public class TutorialFragment extends Fragment {
     }
 
     private void showMitigasiDetail(String disasterType) {
-
         Toast.makeText(requireContext(), "Menampilkan mitigasi untuk " + disasterType, Toast.LENGTH_SHORT).show();
 
+        // Buat Intent untuk membuka MitigasiDetail
+        Intent intent = new Intent(requireContext(), MitigasiDetailActivity.class);
 
+        // Tambahkan data jenis bencana dan tipe disabilitas
+        intent.putExtra("DISASTER_TYPE", disasterType);
+        intent.putExtra("DISABILITY_TYPE", disabilityType);
+
+        // Mulai activity MitigasiDetail
+        startActivity(intent);
     }
 
     private void speakMitigasiDetail(String disasterType) {

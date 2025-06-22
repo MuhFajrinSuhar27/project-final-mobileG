@@ -110,9 +110,9 @@ public class MainActivity extends AppCompatActivity {
                 isNavigatingProgrammatically = false;
                 return true;
             }
-
+        
             int itemId = item.getItemId();
-
+        
             if (itemId == R.id.nav_home) {
                 if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
                     getSupportFragmentManager().popBackStack();
@@ -125,6 +125,9 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
                 return true;
             } else if (itemId == R.id.nav_tutorial) {
+                // Log untuk debugging
+                Log.d("MainActivity", "Tutorial menu dipilih");
+                // Pastikan fragment ditampilkan dengan benar
                 showFragmentHideMainContent();
                 return true;
             }
@@ -387,26 +390,35 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showFragmentHideMainContent() {
+        // Log untuk debugging
+        Log.d("MainActivity", "Mencoba menampilkan tutorial fragment");
+        
         TutorialFragment tutorialFragment = TutorialFragment.newInstance(disabilityType);
-
+        
         // Dapatkan referensi view dari layout
         FrameLayout contentFrame = findViewById(R.id.content_frame);
+        if(contentFrame == null) {
+            Log.e("MainActivity", "content_frame tidak ditemukan dalam layout!");
+            Toast.makeText(this, "Terjadi kesalahan teknis", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        
         ScrollView mainScrollView = findViewById(R.id.scrollViewMain);
         Button sosButton = findViewById(R.id.buttonSos);
-
+        
         // Set visibility untuk fragment container
         contentFrame.setVisibility(View.VISIBLE);
-
+        
         // Sembunyikan konten utama
         if (mainScrollView != null) mainScrollView.setVisibility(View.GONE);
         sosButton.setVisibility(View.GONE);
-
+        
         // Tambahkan fragment ke container
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.content_frame, tutorialFragment);
         transaction.addToBackStack("tutorial");
         transaction.commit();
-
+        
         Toast.makeText(this, "Menampilkan tutorial mitigasi bencana", Toast.LENGTH_SHORT).show();
     }
 

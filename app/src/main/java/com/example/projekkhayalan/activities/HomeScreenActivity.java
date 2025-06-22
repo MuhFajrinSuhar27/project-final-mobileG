@@ -43,11 +43,16 @@ public class HomeScreenActivity extends AppCompatActivity {
         Log.d(TAG, "Disability Type from preferences: " + disabilityType);
 
         initViews();
+
+
         setupAccessibilityFeatures();
         setupCardClickListeners();
     }
 
     private void initViews() {
+
+
+        
         // Sesuaikan ID dengan layout XML Anda
         cardTunanetra = findViewById(R.id.cardDisasterInfo);    // ID untuk kartu tunanetra
         cardTunarungu = findViewById(R.id.cardRescue);          // ID untuk kartu tunarungu
@@ -98,7 +103,7 @@ public class HomeScreenActivity extends AppCompatActivity {
     }
 
     private void setupCardClickListeners() {
-        // Menentukan jenis disabilitas berdasarkan kartu yang dipilih
+
         cardTunanetra.setOnClickListener(v -> {
             setDisabilityType(1); // 1 = tunanetra
             navigateToMainApp();
