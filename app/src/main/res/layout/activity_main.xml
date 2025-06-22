@@ -20,12 +20,12 @@
             android:orientation="vertical"
             android:padding="20dp">
 
-            <!-- Card Greeting dengan efek elevasi dan gradien -->
+            <!-- Header App dengan Logo dan Status -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                app:cardCornerRadius="18dp"
+                app:cardCornerRadius="20dp"
                 app:cardElevation="8dp"
                 app:cardBackgroundColor="@android:color/transparent">
 
@@ -33,15 +33,80 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="20dp"
+                    android:padding="24dp"
                     android:background="@drawable/card_gradient_blue">
 
+                    <!-- App Title dengan Icon -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <ImageView
+                            android:layout_width="68dp"
+                            android:layout_height="58dp"
+                            android:src="@drawable/siagaki"
+                            android:layout_marginEnd="22dp"
+                            />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="SIAGAKI"
+                                android:textSize="20sp"
+                                android:textStyle="bold"
+                                android:textColor="@android:color/white"
+                                android:fontFamily="sans-serif-condensed-medium" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Siaga Bencana untuk Difabel"
+                                android:textSize="10sp"
+                                android:textColor="#E3F2FD"
+                                android:fontFamily="sans-serif-light" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <!-- Status Connection dan Last Update -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="16dp"
+                        android:gravity="center_vertical">
+
+                        <View
+                            android:layout_width="8dp"
+                            android:layout_height="8dp"
+                            android:background="@drawable/status_online_indicator"
+                            android:layout_marginEnd="8dp" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Sistem Online • Terhubung"
+                            android:textSize="12sp"
+                            android:textColor="#C8E6C9"
+                            android:fontFamily="sans-serif" />
+                    </LinearLayout>
+
+                    <!-- Greeting dengan Mode Accessibility -->
                     <TextView
                         android:id="@+id/textViewGreeting"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Halo, Pengguna!"
-                        android:textSize="26sp"
+                        android:layout_marginTop="12dp"
+                        android:text="Halo Teman, Tetap Siaga! 🛡️"
+                        android:textSize="20sp"
                         android:textStyle="bold"
                         android:textColor="@android:color/white"
                         android:fontFamily="sans-serif-medium" />
@@ -50,31 +115,20 @@
                         android:id="@+id/textViewAccessibilityMode"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="6dp"
+                        android:layout_marginTop="8dp"
                         android:text="Mode Difabel Aktif"
                         android:textColor="#FFB74D"
-                        android:textStyle="italic"
-                        android:fontFamily="sans-serif-light"
-                        android:background="@drawable/pill_background"
-                        android:paddingStart="12dp"
-                        android:paddingEnd="12dp"
-                        android:paddingTop="4dp"
-                        android:paddingBottom="4dp" />
-
-                    <TextView
-                        android:id="@+id/textViewSelectedFeature"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="12dp"
-                        android:text="Fitur: Penyelamatan Dari Bencana"
-                        android:textSize="18sp"
                         android:textStyle="bold"
-                        android:textColor="#E3F2FD"
-                        android:fontFamily="sans-serif" />
+                        android:fontFamily="sans-serif-medium"
+                        android:background="@drawable/pill_background"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
+                        android:paddingTop="6dp"
+                        android:paddingBottom="6dp" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <!-- Weather Card dengan desain yang lebih modern -->
+            <!-- Weather Card dengan Emergency Status -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -88,97 +142,151 @@
                     android:background="@drawable/weather_gradient_backround"
                     android:padding="28dp">
 
-                    <!-- Kota dan Waktu dengan efek shadow -->
-                    <TextView
-                        android:id="@+id/textViewCity"
+                    <!-- Emergency Status Indicator -->
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/cardEmergencyStatus"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Makassar"
-                        android:textColor="@android:color/white"
-                        android:textSize="20sp"
-                        android:textStyle="bold"
-                        android:fontFamily="sans-serif-condensed"
-                        android:shadowColor="#33000000"
-                        android:shadowDx="2"
-                        android:shadowDy="2"
-                        android:shadowRadius="3"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:cardCornerRadius="20dp"
+                        app:cardBackgroundColor="#4CAF50"
+                        app:cardElevation="4dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
 
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:padding="8dp">
+
+                            <ImageView
+                                android:layout_width="16dp"
+                                android:layout_height="16dp"
+                                android:src="@android:drawable/presence_online"
+                                android:layout_marginEnd="4dp"
+                                app:tint="@android:color/white" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="AMAN"
+                                android:textSize="12sp"
+                                android:textStyle="bold"
+                                android:textColor="@android:color/white"
+                                android:fontFamily="sans-serif-medium" />
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <!-- Location Info dengan Icon -->
+                    <LinearLayout
+                        android:id="@+id/layoutLocationInfo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@android:drawable/ic_menu_mylocation"
+                            android:layout_marginEnd="8dp"
+                            app:tint="#FFB74D" />
+
+                        <TextView
+                            android:id="@+id/textViewCity"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Makassar"
+                            android:textColor="@android:color/white"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:fontFamily="sans-serif-condensed" />
+                    </LinearLayout>
+
+                    <!-- Time dengan format yang lebih jelas -->
                     <TextView
                         android:id="@+id/textViewTime"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="00.09"
+                        android:layout_marginTop="4dp"
+                        android:text="00:09 WITA"
                         android:textColor="#E0E0E0"
-                        android:textSize="28sp"
-                        android:fontFamily="sans-serif-light"
-                        android:shadowColor="#33000000"
-                        android:shadowDx="1"
-                        android:shadowDy="1"
-                        android:shadowRadius="2"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/textViewCity" />
-
-                    <!-- Kondisi Cuaca dengan efek glow -->
-                    <TextView
-                        android:id="@+id/textViewWeatherCondition"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="32dp"
-                        android:text="Berawan"
-                        android:textColor="#FFD54F"
                         android:textSize="24sp"
-                        android:fontFamily="sans-serif-medium"
+                        android:fontFamily="sans-serif-light"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/textViewTime" />
+                        app:layout_constraintTop_toBottomOf="@id/layoutLocationInfo" />
 
-                    <!-- Suhu Besar dengan tampilan yang lebih menonjol -->
-                    <TextView
-                        android:id="@+id/textViewTemperatureBig"
+                    <!-- Weather dengan Alert Integration -->
+                    <LinearLayout
+                        android:id="@+id/layoutWeatherInfo"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="23°"
-                        android:textColor="@android:color/white"
-                        android:textSize="50sp"
-                        android:textStyle="bold"
-                        android:fontFamily="sans-serif-condensed-medium"
-                        android:shadowColor="#40000000"
-                        android:shadowDx="3"
-                        android:shadowDy="3"
-                        android:shadowRadius="5"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        android:layout_marginTop="16dp"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/textViewTime">
 
-                    <!-- Detail T dan R dengan desain yang lebih elegan -->
-                    <androidx.cardview.widget.CardView
+                        <ImageView
+                            android:id="@+id/imageViewWeatherIcon"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:src="@android:drawable/ic_dialog_alert"
+                            android:layout_marginEnd="8dp"
+                            app:tint="#FFD54F" />
+
+                        <TextView
+                            android:id="@+id/textViewWeatherCondition"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Berawan"
+                            android:textColor="#FFD54F"
+                            android:textSize="15sp"
+                            android:fontFamily="sans-serif-medium" />
+                    </LinearLayout>
+
+                    <!-- Temperature dengan styling yang lebih menonjol -->
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:cardCornerRadius="12dp"
-                        app:cardBackgroundColor="#33FFFFFF"
-                        app:cardElevation="0dp"
-                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:orientation="vertical"
+                        android:gravity="center"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/textViewTemperatureBig">
+                        app:layout_constraintTop_toBottomOf="@id/cardEmergencyStatus"
+                        app:layout_constraintBottom_toBottomOf="parent">
+
+                        <TextView
+                            android:id="@+id/textViewTemperatureBig"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="23°"
+                            android:textColor="@android:color/white"
+                            android:textSize="48sp"
+                            android:textStyle="bold"
+                            android:fontFamily="sans-serif-condensed-medium" />
 
                         <TextView
                             android:id="@+id/textViewWeatherDetails"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="T:31° R:26°"
-                            android:textColor="@android:color/white"
+                            android:text="T:31° R:26%"
+                            android:textColor="#E0E0E0"
                             android:textSize="14sp"
                             android:fontFamily="sans-serif-light"
-                            android:padding="10dp" />
-                    </androidx.cardview.widget.CardView>
+                            android:background="@drawable/weather_detail_background"
+                            android:padding="8dp" />
+                    </LinearLayout>
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>
 
-            <!-- Alert info section dengan warna yang lebih menarik -->
+            <!-- Emergency Alert Section -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
+                android:layout_marginBottom="20dp"
                 app:cardCornerRadius="18dp"
                 app:cardElevation="8dp">
 
@@ -189,6 +297,7 @@
                     android:background="@drawable/alert_gradient_bacground"
                     android:padding="20dp">
 
+                    <!-- Alert Header dengan animasi -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -196,60 +305,160 @@
                         android:gravity="center_vertical">
 
                         <ImageView
-                            android:layout_width="28dp"
-                            android:layout_height="28dp"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
                             android:src="@android:drawable/ic_dialog_info"
-                            android:layout_marginEnd="8dp"
+                            android:layout_marginEnd="12dp"
                             app:tint="#FFB74D" />
 
-                        <TextView
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="🚨 Informasi Peringatan"
+                                android:textSize="18sp"
+                                android:textStyle="bold"
+                                android:textColor="#FFB74D"
+                                android:fontFamily="sans-serif-medium" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Pembaruan setiap 5 menit"
+                                android:textSize="12sp"
+                                android:textColor="#B39DDB"
+                                android:fontFamily="sans-serif" />
+                        </LinearLayout>
+
+                        <!-- Emergency Level Indicator -->
+                        <androidx.cardview.widget.CardView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Informasi Peringatan"
-                            android:textSize="20sp"
-                            android:textStyle="bold"
-                            android:textColor="#FFB74D"
-                            android:fontFamily="sans-serif-medium" />
+                            app:cardCornerRadius="12dp"
+                            app:cardBackgroundColor="#4CAF50"
+                            app:cardElevation="0dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="NORMAL"
+                                android:textSize="10sp"
+                                android:textStyle="bold"
+                                android:textColor="@android:color/white"
+                                android:fontFamily="sans-serif-medium"
+                                android:padding="6dp" />
+                        </androidx.cardview.widget.CardView>
                     </LinearLayout>
 
+                    <!-- Divider dengan efek gradien -->
                     <View
                         android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="#22FFB74D"
+                        android:layout_height="2dp"
+                        android:background="@drawable/divider_gradient"
                         android:layout_marginTop="12dp"
                         android:layout_marginBottom="12dp" />
 
+                    <!-- Alert Content -->
                     <TextView
                         android:id="@+id/textViewAlertInfo"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Memuat informasi peringatan..."
                         android:textColor="#E3F2FD"
-                        android:textSize="16sp"
+                        android:textSize="15sp"
+                        android:lineSpacingExtra="4dp"
                         android:fontFamily="sans-serif" />
+
+                    <!-- Quick Tips untuk Emergency -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:src="@android:drawable/ic_dialog_alert"
+                            android:layout_marginEnd="6dp"
+                            app:tint="#81C784" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="💡 Tips: Selalu siapkan tas darurat dan jalur evakuasi"
+                            android:textSize="12sp"
+                            android:textColor="#81C784"
+                            android:fontFamily="sans-serif-light"
+                            android:textStyle="italic" />
+                    </LinearLayout>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <!-- SOS Button Section dengan efek shadow -->
+            <!-- Enhanced SOS Button dengan Ring Animation -->
             <androidx.cardview.widget.CardView
-                android:layout_width="150dp"
-                android:layout_height="150dp"
+                android:layout_width="170dp"
+                android:layout_height="170dp"
                 android:layout_gravity="center"
-                android:layout_marginTop="16dp"
-                app:cardCornerRadius="75dp"
-                app:cardElevation="12dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="20dp"
+                app:cardCornerRadius="85dp"
+                app:cardElevation="16dp"
                 app:cardBackgroundColor="@android:color/transparent">
 
-                <Button
-                    android:id="@+id/buttonSos"
+                <!-- Outer Ring untuk efek animasi -->
+                <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                  android:backgroundTint="#FF1200"
-                    android:text="SOS"
-                    android:textSize="28sp"
-                    android:textStyle="bold"
-                    android:fontFamily="sans-serif-black"
-                    android:textColor="@android:color/white"/>
+                    app:cardCornerRadius="85dp"
+                    app:cardBackgroundColor="#33FF1200"
+                    app:cardElevation="0dp">
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="140dp"
+                        android:layout_height="140dp"
+                        android:layout_gravity="center"
+                        app:cardCornerRadius="70dp"
+                        app:cardBackgroundColor="#FF1200"
+                        app:cardElevation="8dp">
+
+                        <Button
+                            android:id="@+id/buttonSos"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@android:color/transparent"
+                            android:text="🆘\nSOS"
+                            android:textSize="22sp"
+                            android:textStyle="bold"
+                            android:fontFamily="sans-serif-black"
+                            android:textColor="@android:color/white"
+                            android:gravity="center"
+                            android:lineSpacingExtra="4dp" />
+                    </androidx.cardview.widget.CardView>
+                </androidx.cardview.widget.CardView>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Emergency Contact Quick Access -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="6dp"
+                app:cardBackgroundColor="#1A237E">
+
+
+
+
+
+
+
             </androidx.cardview.widget.CardView>
         </LinearLayout>
     </ScrollView>

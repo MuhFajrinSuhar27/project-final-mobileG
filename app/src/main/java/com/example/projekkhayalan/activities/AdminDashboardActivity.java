@@ -23,7 +23,7 @@ public class AdminDashboardActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_admin_dashboard);
+
 
         initViews();
         setupToolbar();
@@ -32,10 +32,7 @@ public class AdminDashboardActivity extends AppCompatActivity {
     }
 
     private void initViews() {
-        recyclerViewSosCalls = findViewById(R.id.recyclerViewSosCalls);
-        textViewNoSosCalls = findViewById(R.id.textViewNoSosCalls);
-        buttonManageOfficers = findViewById(R.id.buttonManageOfficers);
-        buttonAddOfficer = findViewById(R.id.buttonAddOfficer);
+
         buttonLogout = findViewById(R.id.buttonLogout);
     }
 
@@ -67,7 +64,7 @@ public class AdminDashboardActivity extends AppCompatActivity {
         recyclerViewSosCalls.setVisibility(android.view.View.GONE);
         textViewNoSosCalls.setVisibility(android.view.View.VISIBLE);
 
-        // Setelah database lengkap, terapkan kode untuk mengambil data SOS
+
     }
 
     @Override

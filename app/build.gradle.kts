@@ -40,16 +40,14 @@ dependencies {
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
 
-    // DEPENDENSI YANG MASIH PERLU DITAMBAHKAN:
 
-    // Retrofit untuk API calls (WAJIB)
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
 
-    // Gson untuk parsing JSON (WAJIB)
+
     implementation("com.google.code.gson:gson:2.10.1")
 
-    // Komponen yang sudah Anda tambahkan
+
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
     implementation("com.squareup.retrofit2:converter-simplexml:2.9.0")

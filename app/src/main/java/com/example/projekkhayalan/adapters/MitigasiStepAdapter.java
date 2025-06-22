@@ -168,7 +168,7 @@ public class MitigasiStepAdapter extends RecyclerView.Adapter<MitigasiStepAdapte
             textViewStepNumber = itemView.findViewById(R.id.textViewStepNumber);
             imageViewStep = itemView.findViewById(R.id.imageViewStep);
             imageViewIcon = itemView.findViewById(R.id.imageViewIcon);
-            buttonReadMore = itemView.findViewById(R.id.buttonReadMore);
+
             buttonListenAudio = itemView.findViewById(R.id.buttonListenAudio);
             layoutBadgeContainer = itemView.findViewById(R.id.layoutBadgeContainer);
         }

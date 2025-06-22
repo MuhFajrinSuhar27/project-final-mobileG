@@ -235,7 +235,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    // Method untuk update status panggilan
+
     public boolean updateSosCallStatus(long id, String status) {
         try {
             SQLiteDatabase db = this.getWritableDatabase();
@@ -279,7 +279,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    // Method untuk memeriksa login admin
+
     public boolean checkAdminLogin(String username, String password) {
         try {
             SQLiteDatabase db = this.getReadableDatabase();
@@ -299,7 +299,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    // Method untuk login petugas
+
     public boolean checkPetugasLogin(String username, String password) {
         try {
             SQLiteDatabase db = this.getReadableDatabase();
@@ -319,7 +319,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    // Method untuk mendapatkan data petugas berdasarkan username
+
     public Cursor getPetugasData(String username) {
         try {
             SQLiteDatabase db = this.getReadableDatabase();
@@ -343,7 +343,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    // Method untuk mendapatkan data admin berdasarkan username
     public Cursor getAdminData(String username) {
         try {
             SQLiteDatabase db = this.getReadableDatabase();
@@ -367,7 +366,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    // Method untuk update terakhir login admin
+
     public void updateAdminLastLogin(String username) {
         try {
             SQLiteDatabase db = this.getWritableDatabase();
@@ -381,7 +380,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    // Method untuk update terakhir login petugas
+
     public void updatePetugasLastLogin(String username) {
         try {
             SQLiteDatabase db = this.getWritableDatabase();

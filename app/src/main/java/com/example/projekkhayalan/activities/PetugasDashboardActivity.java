@@ -26,7 +26,6 @@ public class PetugasDashboardActivity extends AppCompatActivity implements SosCa
     private static final String TAG = "PetugasDashboardActivity";
     private TextView textViewNamaPetugas;
     private TextView textViewSpecialization;
-    private TextView textViewServiceArea;
     private RecyclerView recyclerViewActiveCalls;
     private TextView textViewNoActiveCalls;
     private Button buttonUpdateStatus;
@@ -60,7 +59,7 @@ public class PetugasDashboardActivity extends AppCompatActivity implements SosCa
             return;
         }
 
-        // Log untuk debugging
+
         Log.d(TAG, "Username petugas: " + username);
 
         initViews();
@@ -86,7 +85,7 @@ public class PetugasDashboardActivity extends AppCompatActivity implements SosCa
     private void initViews() {
         textViewNamaPetugas = findViewById(R.id.textViewNamaPetugas);
         textViewSpecialization = findViewById(R.id.textViewSpecialization);
-        textViewServiceArea = findViewById(R.id.textViewServiceArea);
+
         recyclerViewActiveCalls = findViewById(R.id.recyclerViewActiveCalls);
         textViewNoActiveCalls = findViewById(R.id.textViewNoActiveCalls);
         buttonUpdateStatus = findViewById(R.id.buttonUpdateStatus);
@@ -112,7 +111,7 @@ public class PetugasDashboardActivity extends AppCompatActivity implements SosCa
 
             textViewNamaPetugas.setText(namaPetugas);
             textViewSpecialization.setText(spesialisasi != null ? spesialisasi : "Tidak ada spesialisasi");
-            textViewServiceArea.setText(areaTugas != null ? areaTugas : "Tidak ada area tugas");
+
 
             updateStatusButtonText();
 
@@ -206,19 +205,16 @@ public class PetugasDashboardActivity extends AppCompatActivity implements SosCa
     private void loadActiveSosCalls() {
         Log.d(TAG, "Loading panggilan SOS aktif");
 
-        // PERBAIKAN: Gunakan getAllActiveSosCalls() alih-alih getSosCallsByArea()
-        // ini memastikan petugas melihat semua panggilan SOS, tidak hanya di areanya
+
         Cursor cursor = dbHelper.getAllActiveSosCalls();
 
         if (cursor != null) {
             Log.d(TAG, "Jumlah panggilan SOS aktif: " + cursor.getCount());
 
             if (cursor.getCount() > 0) {
-                // Ada panggilan aktif, tampilkan di RecyclerView
                 recyclerViewActiveCalls.setVisibility(View.VISIBLE);
                 textViewNoActiveCalls.setVisibility(View.GONE);
 
-                // Inisialisasi adapter jika belum
                 if (sosCallAdapter == null) {
                     sosCallAdapter = new SosCallAdapter(this, cursor);
                     recyclerViewActiveCalls.setAdapter(sosCallAdapter);
@@ -228,7 +224,6 @@ public class PetugasDashboardActivity extends AppCompatActivity implements SosCa
                     Log.d(TAG, "Cursor di-swap");
                 }
             } else {
-                // Tidak ada panggilan aktif
                 recyclerViewActiveCalls.setVisibility(View.GONE);
                 textViewNoActiveCalls.setVisibility(View.VISIBLE);
                 textViewNoActiveCalls.setText("Tidak ada panggilan SOS aktif");
@@ -239,7 +234,6 @@ public class PetugasDashboardActivity extends AppCompatActivity implements SosCa
                 }
             }
         } else {
-            // Error mengakses database
             recyclerViewActiveCalls.setVisibility(View.GONE);
             textViewNoActiveCalls.setVisibility(View.VISIBLE);
             textViewNoActiveCalls.setText("Error mengakses data panggilan SOS");
@@ -247,7 +241,6 @@ public class PetugasDashboardActivity extends AppCompatActivity implements SosCa
         }
     }
 
-    // Implementasi dari interface SosCallActionListener
     @Override
     public void onSosCallCompleted(long sosCallId) {
         Toast.makeText(this, "Panggilan SOS berhasil ditandai selesai", Toast.LENGTH_SHORT).show();
@@ -257,9 +250,9 @@ public class PetugasDashboardActivity extends AppCompatActivity implements SosCa
     @Override
     protected void onResume() {
         super.onResume();
-        loadActiveSosCalls(); // Reload saat activity kembali aktif
+        loadActiveSosCalls();
 
-        // Update terakhir login setiap kali activity aktif
+
         if (username != null) {
             dbHelper.updatePetugasLastLogin(username);
         }
@@ -284,10 +277,9 @@ public class PetugasDashboardActivity extends AppCompatActivity implements SosCa
 
     // Method debug untuk memaksa reload data
     private void debugForceDatabaseLoad() {
-        // Hapus database lama
         dbHelper.resetDatabase(this);
 
-        // Buat instance baru
+
         dbHelper = new DatabaseHelper(this);
 
         Toast.makeText(this, "Database direset. Restart aplikasi.", Toast.LENGTH_SHORT).show();

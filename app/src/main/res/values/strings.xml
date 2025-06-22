@@ -43,6 +43,8 @@
     <string name="enable_high_contrast">Aktifkan Kontras Tinggi</string>
     <string name="enable_large_text">Aktifkan Teks Besar</string>
     <string name="save_profile">Simpan Profil</string>
+
+    <!-- Mitigasi strings -->
     <string name="mitigasi_bencana">MITIGASI BENCANA</string>
     <string name="informasi_penting">Informasi Penting</string>
     <string name="langkah_langkah_mitigasi">Langkah-Langkah Mitigasi</string>

@@ -73,6 +73,7 @@
                 android:textColor="@android:color/white"
                 android:textSize="12sp"
                 android:textStyle="bold" />
+
         </LinearLayout>
 
         <TextView
@@ -115,18 +116,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="• Siapkan tas darurat berisi barang penting\n• Kenali jalur evakuasi terdekat\n• Simpan barang berharga di tempat tinggi\n• Ikuti informasi cuaca dan peringatan banjir" />
 
-            <!-- Perbarui tombol membaca dan audio -->
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/buttonReadMore"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Baca Selengkapnya"
-                app:icon="@drawable/ic_arrow_right"
-                app:iconGravity="end"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/textViewStepDescription" />
+
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/buttonListenAudio"
@@ -140,7 +130,8 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/textViewStepDescription" />
 
-                    </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </com.google.android.material.card.MaterialCardView>
