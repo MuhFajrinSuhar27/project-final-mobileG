@@ -18,6 +18,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
+        <!-- Bagian header - tidak ada perubahan -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -26,7 +27,7 @@
             android:padding="20dp"
             android:gravity="center">
 
-            <!-- Icon Login -->
+            <!-- Header content - tidak diubah -->
             <androidx.cardview.widget.CardView
                 android:layout_width="64dp"
                 android:layout_height="64dp"
@@ -39,11 +40,9 @@
                     android:layout_height="56dp"
                     android:layout_gravity="center"
                     android:src="@drawable/siagaki"
-
                     android:contentDescription="Icon login petugas" />
             </androidx.cardview.widget.CardView>
 
-            <!-- Title -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -57,7 +56,6 @@
                 android:importantForAccessibility="yes"
                 android:contentDescription="Login untuk petugas sistem siaga bencana" />
 
-            <!-- Subtitle -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -68,7 +66,6 @@
                 android:fontFamily="sans-serif-light"
                 android:gravity="center" />
 
-            <!-- Status Badge -->
             <androidx.cardview.widget.CardView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -104,7 +101,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- Username Input dengan Material Design -->
+        <!-- Username Input - tidak ada perubahan -->
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -133,7 +130,7 @@
                 android:contentDescription="Masukkan username petugas Anda" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Password Input dengan Material Design -->
+        <!-- Password Input - tidak ada perubahan -->
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -164,7 +161,7 @@
                 android:contentDescription="Masukkan password petugas Anda" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Security Info -->
+        <!-- Security Info - tidak ada perubahan -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -200,7 +197,7 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- Remember Me dan Forgot Password -->
+        <!-- Remember Me dan Forgot Password - pindahkan tombol keluar dari sini -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -239,9 +236,34 @@
                 android:padding="8dp"
                 android:contentDescription="Ketuk jika lupa password" />
         </LinearLayout>
+
+        <!-- PINDAHKAN TOMBOL KE SINI, DI LUAR LAYOUT SEBELUMNYA -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="end"
+            android:layout_marginTop="8dp">
+
+            <Button
+                android:id="@+id/buttonDialogBatal"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:text="BATAL" />
+
+            <Button
+                android:id="@+id/buttonDialogLogin"
+                style="@style/Widget.MaterialComponents.Button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/colorPrimary"
+                android:text="LOGIN" />
+        </LinearLayout>
     </LinearLayout>
 
-    <!-- Hidden RadioGroup untuk kompatibilitas dengan kode existing -->
+    <!-- Hidden RadioGroup - tambahkan RadioButton Admin -->
     <RadioGroup
         android:id="@+id/radioGroupRole"
         android:layout_width="0dp"
@@ -256,6 +278,12 @@
             android:layout_height="wrap_content"
             android:text="Petugas"
             android:checked="true" />
-    </RadioGroup>
 
+        <!-- Tambahkan RadioButton Admin yang hilang -->
+        <RadioButton
+            android:id="@+id/radioButtonAdmin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Admin" />
+    </RadioGroup>
 </androidx.constraintlayout.widget.ConstraintLayout>

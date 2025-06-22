@@ -57,13 +57,15 @@ public class MainActivity extends AppCompatActivity {
     private boolean isFirstLoad = true;
     private boolean isTtsInProgress = false;
 
+    // Flag untuk menandai Fragment aktif
+    private boolean isFragmentActive = false;
+
     private Handler weatherRefreshHandler = new Handler(Looper.getMainLooper());
     private Runnable weatherRefreshRunnable;
     private static final long WEATHER_REFRESH_INTERVAL = 300000;
 
     private Handler clockHandler = new Handler(Looper.getMainLooper());
     private Runnable clockRunnable;
-
     private static final long CLOCK_UPDATE_INTERVAL = 1000;
 
     private boolean useRealTimeClock = true; // true kalo mau gunakan jam real-time, false ambil dari api
@@ -99,7 +101,6 @@ public class MainActivity extends AppCompatActivity {
         textViewWeatherDetails = findViewById(R.id.textViewWeatherDetails);
         textViewAlertInfo = findViewById(R.id.textViewAlertInfo);
 
-
         bottomNavigationView = findViewById(R.id.bottomNavigation);
         buttonSos = findViewById(R.id.buttonSos);
     }
@@ -110,9 +111,9 @@ public class MainActivity extends AppCompatActivity {
                 isNavigatingProgrammatically = false;
                 return true;
             }
-        
+
             int itemId = item.getItemId();
-        
+
             if (itemId == R.id.nav_home) {
                 if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
                     getSupportFragmentManager().popBackStack();
@@ -192,6 +193,7 @@ public class MainActivity extends AppCompatActivity {
         };
         weatherRefreshHandler.postDelayed(weatherRefreshRunnable, WEATHER_REFRESH_INTERVAL);
     }
+
     private void setupAccessibilityFeatures() {
         Log.d(TAG, "Setting up accessibility features, disability type: " + disabilityType);
 
@@ -262,15 +264,12 @@ public class MainActivity extends AppCompatActivity {
             textViewAlertInfo.setText("Memuat informasi peringatan...");
         }
 
-
         WeatherApiService apiService = WeatherApiClient.getWeatherService();
-
 
         Call<WeatherResponse> call = apiService.getWeatherForecast("73.71.14.1001");
 
         // Log waktu request
         Log.d(TAG, "Memanggil API cuaca: " + new Date().toString());
-
 
         call.enqueue(new Callback<WeatherResponse>() {
             @Override
@@ -279,10 +278,8 @@ public class MainActivity extends AppCompatActivity {
                     WeatherResponse weatherData = response.body();
                     displayWeatherData(weatherData);
 
-
                     SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss", new Locale("id", "ID"));
                     String currentTime = sdf.format(new Date());
-
 
                     Log.d(TAG, "API berhasil dimuat: " + response.code());
                 } else {
@@ -315,16 +312,13 @@ public class MainActivity extends AppCompatActivity {
 
                 WeatherResponse.LocationInfo lokasi = weatherData.getLokasi();
 
-
                 WeatherResponse.DataItem dataItem = weatherData.getData().get(0);
                 if (dataItem.getCuaca() != null && !dataItem.getCuaca().isEmpty() &&
                         !dataItem.getCuaca().get(0).isEmpty()) {
 
                     WeatherResponse.WeatherItem currentWeather = dataItem.getCuaca().get(0).get(0);
 
-
                     textViewCity.setText(lokasi.getKotkab());
-
 
                     if (!useRealTimeClock) {
                         textViewTime.setText(formatLocalTime(currentWeather.getLocalDatetime()));
@@ -339,14 +333,15 @@ public class MainActivity extends AppCompatActivity {
                             currentWeather.getHumidity());
                     textViewWeatherDetails.setText(weatherDetails);
 
-
                     updateAlertInfo(currentWeather);
 
                     // Log waktu update data terakhir
                     Log.d(TAG, "Data cuaca diperbarui pada: " + new Date().toString());
 
-                    // Jangan bacakan informasi cuaca jika kembali dari SOS
-                    if (!isSosReturn && disabilityType == 1 && textToSpeech != null && (isFirstLoad || !isTtsInProgress)) {
+                    // Jangan bacakan informasi cuaca jika kembali dari SOS atau fragment aktif
+                    if (!isSosReturn && disabilityType == 1 && textToSpeech != null &&
+                            (isFirstLoad || !isTtsInProgress) && !isFragmentActive) {
+
                         String speechText = "Kondisi cuaca di " + lokasi.getKotkab() + " saat ini adalah " +
                                 currentWeather.getWeatherDescription() +
                                 " dengan suhu " + currentWeather.getTemperature() + " derajat celcius.";
@@ -392,9 +387,9 @@ public class MainActivity extends AppCompatActivity {
     private void showFragmentHideMainContent() {
         // Log untuk debugging
         Log.d("MainActivity", "Mencoba menampilkan tutorial fragment");
-        
+
         TutorialFragment tutorialFragment = TutorialFragment.newInstance(disabilityType);
-        
+
         // Dapatkan referensi view dari layout
         FrameLayout contentFrame = findViewById(R.id.content_frame);
         if(contentFrame == null) {
@@ -402,23 +397,26 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Terjadi kesalahan teknis", Toast.LENGTH_SHORT).show();
             return;
         }
-        
+
         ScrollView mainScrollView = findViewById(R.id.scrollViewMain);
         Button sosButton = findViewById(R.id.buttonSos);
-        
+
         // Set visibility untuk fragment container
         contentFrame.setVisibility(View.VISIBLE);
-        
+
         // Sembunyikan konten utama
         if (mainScrollView != null) mainScrollView.setVisibility(View.GONE);
         sosButton.setVisibility(View.GONE);
-        
+
+        // Set flag fragment active to true
+        isFragmentActive = true;
+
         // Tambahkan fragment ke container
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.content_frame, tutorialFragment);
         transaction.addToBackStack("tutorial");
         transaction.commit();
-        
+
         Toast.makeText(this, "Menampilkan tutorial mitigasi bencana", Toast.LENGTH_SHORT).show();
     }
 
@@ -430,6 +428,9 @@ public class MainActivity extends AppCompatActivity {
 
         // Sembunyikan fragment container
         contentFrame.setVisibility(View.GONE);
+
+        // Set flag fragment active to false
+        isFragmentActive = false;
 
         // Tampilkan kembali konten utama
         if (mainScrollView != null) mainScrollView.setVisibility(View.VISIBLE);
@@ -475,8 +476,9 @@ public class MainActivity extends AppCompatActivity {
 
             textViewAlertInfo.setText(alertMessage);
 
-            // Jangan bacakan peringatan jika kembali dari SOS
-            if (!isSosReturn && disabilityType == 1 && textToSpeech != null && !isTtsInProgress && !isFirstLoad) {
+            // Jangan bacakan peringatan jika kembali dari SOS atau fragment aktif
+            if (!isSosReturn && disabilityType == 1 && textToSpeech != null &&
+                    !isTtsInProgress && !isFirstLoad && !isFragmentActive) {
                 textToSpeech.speak(alertMessage, TextToSpeech.QUEUE_ADD, null, "alert_info");
             }
         } else if (weatherDesc.contains("berawan")) {
@@ -508,12 +510,15 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        // Update clock jika diperlukan
         if (useRealTimeClock && clockHandler != null && clockRunnable != null) {
             clockHandler.post(clockRunnable);
         }
 
-        // Hanya muat ulang data cuaca jika ini bukan pertama kali dan bukan kembali dari SOS
-        if (!isFirstLoad && !isSosReturn) {
+        // Hanya muat ulang data cuaca jika ini bukan pertama kali,
+        // bukan kembali dari SOS, dan fragment tidak aktif
+        if (!isFirstLoad && !isSosReturn && !isFragmentActive) {
             loadWeatherData();
         }
     }

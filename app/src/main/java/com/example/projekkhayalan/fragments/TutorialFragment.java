@@ -66,6 +66,8 @@ public class TutorialFragment extends Fragment {
         setupCardClickListeners();
     }
 
+
+
     private void initViews(View view) {
         textViewTitle = view.findViewById(R.id.textViewMitigasiTitle);
         cardBanjir = view.findViewById(R.id.cardBanjir);
@@ -202,6 +204,8 @@ public class TutorialFragment extends Fragment {
 
         textToSpeech.speak(infoToSpeak, TextToSpeech.QUEUE_FLUSH, null, "mitigasi_detail");
     }
+
+    
 
     @Override
     public void onDestroy() {
