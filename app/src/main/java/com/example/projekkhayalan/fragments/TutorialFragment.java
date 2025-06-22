@@ -50,7 +50,7 @@ public class TutorialFragment extends Fragment {
             disabilityType = getArguments().getInt("DISABILITY_TYPE", 1);
         }
     }
-
+ 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
